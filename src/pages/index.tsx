@@ -5,6 +5,8 @@ import { all } from "ar-gql";
 import verificationsQuery from "../queries/verifications";
 import {
   useModal,
+  useToasts,
+  useClipboard,
   Page,
   Row,
   Breadcrumbs,
@@ -72,6 +74,9 @@ const Home = () => {
     }
   }, [addr]);
 
+  const [, setToast] = useToasts();
+  const { copy } = useClipboard();
+
   return (
     <Page>
       <Row justify="space-between" align="middle">
@@ -113,7 +118,18 @@ const Home = () => {
             <Text h4>{count} verifications</Text>
             <Card.Footer>
               <Text>
-                <ClippyIcon /> Copy verification link.
+                <Text
+                  onClick={() => {
+                    copy(`https://trust.arverify.org/verify/${addr}`);
+                    setToast({
+                      text: "Verification link copied to clipboard.",
+                      type: "secondary",
+                    });
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <ClippyIcon /> Copy verification link.
+                </Text>
                 <Spacer y={0.5} />
                 <ClockIcon /> {time}
               </Text>
