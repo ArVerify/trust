@@ -36,25 +36,32 @@ const Home = () => {
   const [percentage, setPercentage] = useState(0);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState("");
+
+  const fetchData = async () => {
+    const raw = await fetch(
+      `https://arverify-trust.herokuapp.com/score/${addr}`
+    );
+    const res = await raw.clone().json();
+
+    setPercentage(parseFloat(res.percentage.toFixed(2)));
+    setScore(res.score);
+
+    const now = moment();
+    const then = moment(res.updated_at);
+    const diff = moment.duration(-now.diff(then));
+    setTime(diff.humanize(true));
+  };
+
   useEffect(() => {
     if (addr !== "") {
       (async () => {
         setLoading(true);
-
-        const raw = await fetch(
-          `https://arverify-trust.herokuapp.com/score/${addr}`
-        );
-        const res = await raw.clone().json();
-
-        setPercentage(parseFloat(res.percentage.toFixed(2)));
-        setScore(res.score);
-
-        const now = moment();
-        const then = moment(res.updated_at);
-        const diff = moment.duration(-now.diff(then));
-        setTime(diff.humanize(true));
-
+        await fetchData();
         setLoading(false);
+
+        setInterval(async () => {
+          await fetchData();
+        }, 60000);
       })();
     }
   }, [addr]);
