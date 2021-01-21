@@ -37,6 +37,7 @@ const Home = () => {
   const { setVisible, bindings } = useModal();
 
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState("");
@@ -48,16 +49,20 @@ const Home = () => {
     );
     const res = await raw.clone().json();
 
-    setPercentage(parseFloat(res.percentage.toFixed(2)));
-    setScore(res.score);
+    if (res.percentage && res.score && res.updated_at) {
+      setPercentage(parseFloat(res.percentage.toFixed(2)));
+      setScore(res.score);
 
-    const now = moment();
-    const then = moment(res.updated_at);
-    const diff = moment.duration(-now.diff(then));
-    setTime(diff.humanize(true));
+      const now = moment();
+      const then = moment(res.updated_at);
+      const diff = moment.duration(-now.diff(then));
+      setTime(diff.humanize(true));
 
-    const gql = await all(verificationsQuery, { addr });
-    setCount(gql.length);
+      const gql = await all(verificationsQuery, { addr });
+      setCount(gql.length);
+    } else {
+      setFailed(true);
+    }
   };
 
   useEffect(() => {
@@ -113,28 +118,36 @@ const Home = () => {
             Log In
           </Button>
         ) : (
-          <Card>
-            <Text h2>{`${percentage}%`}</Text>
-            <Text h4>{count} verifications</Text>
-            <Card.Footer>
-              <Text>
-                <Text
-                  onClick={() => {
-                    copy(`https://trust.arverify.org/verify/${addr}`);
-                    setToast({
-                      text: "Verification link copied to clipboard.",
-                      type: "secondary",
-                    });
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <ClippyIcon /> Copy verification link.
-                </Text>
-                <Spacer y={0.5} />
-                <ClockIcon /> {time}
-              </Text>
-            </Card.Footer>
-          </Card>
+          <>
+            {failed ? (
+              <Button type="secondary" disabled>
+                Submit your address
+              </Button>
+            ) : (
+              <Card>
+                <Text h2>{`${percentage}%`}</Text>
+                <Text h4>{count} verifications</Text>
+                <Card.Footer>
+                  <Text>
+                    <Text
+                      onClick={() => {
+                        copy(`https://trust.arverify.org/verify/${addr}`);
+                        setToast({
+                          text: "Verification link copied to clipboard.",
+                          type: "secondary",
+                        });
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <ClippyIcon /> Copy verification link.
+                    </Text>
+                    <Spacer y={0.5} />
+                    <ClockIcon /> {time}
+                  </Text>
+                </Card.Footer>
+              </Card>
+            )}
+          </>
         )}
       </div>
       <Modal {...bindings}>
