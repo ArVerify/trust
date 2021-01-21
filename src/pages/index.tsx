@@ -1,5 +1,6 @@
 import Arweave from "arweave";
 import { useState, useEffect } from "react";
+import moment from "moment";
 import {
   useModal,
   Page,
@@ -8,9 +9,10 @@ import {
   Text,
   Button,
   Card,
+  Spacer,
   Modal,
 } from "@geist-ui/react";
-import { FileIcon, ClippyIcon } from "@primer/octicons-react";
+import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -29,6 +31,33 @@ const Home = () => {
     })();
   }, []);
   const { setVisible, bindings } = useModal();
+
+  const [loading, setLoading] = useState(false);
+  const [percentage, setPercentage] = useState(0);
+  const [score, setScore] = useState(0);
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    if (addr !== "") {
+      (async () => {
+        setLoading(true);
+
+        const raw = await fetch(
+          `https://arverify-trust.herokuapp.com/score/${addr}`
+        );
+        const res = await raw.clone().json();
+
+        setPercentage(parseFloat(res.percentage.toFixed(2)));
+        setScore(res.score);
+
+        const now = moment();
+        const then = moment(res.updated_at);
+        const diff = moment.duration(-now.diff(then));
+        setTime(diff.humanize(true));
+
+        setLoading(false);
+      })();
+    }
+  }, [addr]);
 
   return (
     <Page>
@@ -67,11 +96,13 @@ const Home = () => {
           </Button>
         ) : (
           <Card>
-            <Text h2>42%</Text>
+            <Text h2>{`${percentage}%`}</Text>
             <Text h4>2 verifications</Text>
             <Card.Footer>
               <Text>
                 <ClippyIcon /> Copy verification link.
+                <Spacer y={0.5} />
+                <ClockIcon /> {time}
               </Text>
             </Card.Footer>
           </Card>
