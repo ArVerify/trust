@@ -1,6 +1,8 @@
 import Arweave from "arweave";
 import { useState, useEffect } from "react";
 import moment from "moment";
+import { all } from "ar-gql";
+import verificationsQuery from "../queries/verifications";
 import {
   useModal,
   Page,
@@ -36,6 +38,7 @@ const Home = () => {
   const [percentage, setPercentage] = useState(0);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState("");
+  const [count, setCount] = useState(0);
 
   const fetchData = async () => {
     const raw = await fetch(
@@ -50,6 +53,9 @@ const Home = () => {
     const then = moment(res.updated_at);
     const diff = moment.duration(-now.diff(then));
     setTime(diff.humanize(true));
+
+    const gql = await all(verificationsQuery, { addr });
+    setCount(gql.length);
   };
 
   useEffect(() => {
@@ -104,7 +110,7 @@ const Home = () => {
         ) : (
           <Card>
             <Text h2>{`${percentage}%`}</Text>
-            <Text h4>2 verifications</Text>
+            <Text h4>{count} verifications</Text>
             <Card.Footer>
               <Text>
                 <ClippyIcon /> Copy verification link.
