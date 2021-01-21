@@ -13,6 +13,7 @@ import {
   Text,
   Button,
   Card,
+  Dot,
   Spacer,
   Modal,
 } from "@geist-ui/react";
@@ -38,6 +39,7 @@ const Home = () => {
 
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [status, setStatus] = useState("warning");
   const [percentage, setPercentage] = useState(0);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState("");
@@ -49,7 +51,12 @@ const Home = () => {
     );
     const res = await raw.clone().json();
 
-    if (res.percentage && res.score && res.updated_at) {
+    const status = res.status;
+
+    if (status === "FETCHED") {
+      setFailed(false);
+      setStatus("success");
+
       setPercentage(parseFloat(res.percentage.toFixed(2)));
       setScore(res.score);
 
@@ -60,13 +67,17 @@ const Home = () => {
 
       const gql = await all(verificationsQuery, { addr });
       setCount(gql.length);
-    } else {
+    }
+    if (status === "SUBMITTED") {
+      setStatus("warning");
+    }
+    if (status === "UNKNOWN") {
       setFailed(true);
     }
   };
 
   useEffect(() => {
-    if (addr !== "") {
+    if (addr !== "" && !failed) {
       (async () => {
         setLoading(true);
         await fetchData();
@@ -77,7 +88,7 @@ const Home = () => {
         }, 60000);
       })();
     }
-  }, [addr]);
+  }, [addr, failed]);
 
   const [, setToast] = useToasts();
   const { copy } = useClipboard();
@@ -120,12 +131,29 @@ const Home = () => {
         ) : (
           <>
             {failed ? (
-              <Button type="secondary" disabled>
+              <Button
+                type="secondary"
+                onClick={async () => {
+                  await fetch(`https://arverify-trust.herokuapp.com/score`, {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ address: addr }),
+                  });
+                  setFailed(false);
+                }}
+              >
                 Submit your address
               </Button>
             ) : (
               <Card>
-                <Text h2>{`${percentage}%`}</Text>
+                <Text h2>
+                  {/* @ts-ignore */}
+                  {/* <Dot type={status} /> */}
+                  {`${percentage}%`}
+                </Text>
                 <Text h4>{count} verifications</Text>
                 <Card.Footer>
                   <Text>
