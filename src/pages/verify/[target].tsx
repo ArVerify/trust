@@ -15,6 +15,7 @@ import {
 import { all } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
 import { FileIcon } from "@primer/octicons-react";
+import { selectTokenHolder } from "../../utils/community";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -57,6 +58,9 @@ const Verify = () => {
     })();
   });
 
+  const [loading, setLoading] = useState(false);
+  const [verified, setVerified] = useState(false);
+
   return (
     <Page>
       <Row justify="space-between" align="middle">
@@ -94,8 +98,47 @@ const Verify = () => {
           <Card>
             <Text h3>{target}</Text>
             <Text h4>{count} verifications</Text>
-            <Button type="secondary" disabled>
-              Verify now
+            <Button
+              type="secondary"
+              loading={loading}
+              disabled={verified}
+              onClick={async () => {
+                setLoading(true);
+
+                const jwk = JSON.parse(localStorage.getItem("keyfile"));
+
+                const tip = await client.createTransaction(
+                  {
+                    target: await selectTokenHolder(),
+                    quantity: client.ar.arToWinston(fee.toString()),
+                  },
+                  jwk
+                );
+                tip.addTag("Application", "ArVerify");
+                tip.addTag("Action", "Verification-TIP");
+                tip.addTag("Address", target);
+                await client.transactions.sign(tip, jwk);
+                await client.transactions.post(tip);
+
+                const tx = await client.createTransaction(
+                  {
+                    target,
+                    data: Math.random().toString().slice(-4),
+                  },
+                  jwk
+                );
+                tx.addTag("Application", "ArVerify");
+                tx.addTag("Action", "Verification");
+                tx.addTag("Method", "Link");
+                tx.addTag("Address", target);
+                await client.transactions.sign(tx, jwk);
+                await client.transactions.post(tx);
+
+                setLoading(false);
+                setVerified(true);
+              }}
+            >
+              {verified ? "Verified" : "Verify now"}
             </Button>
             <Card.Footer>
               <Text>
