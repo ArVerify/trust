@@ -115,7 +115,7 @@ const Verify = () => {
                   jwk
                 );
                 tip.addTag("Application", "ArVerify");
-                tip.addTag("Action", "Verification-TIP");
+                tip.addTag("Action", "FEE_Verification");
                 tip.addTag("Address", target);
                 await client.transactions.sign(tip, jwk);
                 await client.transactions.post(tip);
