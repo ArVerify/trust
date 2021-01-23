@@ -101,7 +101,7 @@ const Verify = () => {
             <Button
               type="secondary"
               loading={loading}
-              disabled={verified}
+              disabled={verified || addr === target}
               onClick={async () => {
                 setLoading(true);
 
