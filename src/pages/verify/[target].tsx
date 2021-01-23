@@ -11,10 +11,13 @@ import {
   Modal,
   Card,
   Code,
+  Divider,
+  Tooltip,
 } from "@geist-ui/react";
-import { all } from "ar-gql";
+import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
-import { FileIcon } from "@primer/octicons-react";
+import verificationQuery from "../../queries/verification";
+import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
 
 const client = new Arweave({
@@ -47,7 +50,7 @@ const Verify = () => {
   const [fee, setFee] = useState(0);
   useEffect(() => {
     (async () => {
-      const gql = await all(verificationsQuery, { addr });
+      const gql = await all(verificationsQuery, { addr: target });
       setCount(gql.length);
 
       const raw = await fetch(
@@ -60,6 +63,17 @@ const Verify = () => {
 
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
+  useEffect(() => {
+    if (addr && target) {
+      (async () => {
+        const gql = (await run(verificationQuery, { addr, target })).data
+          .transactions.edges;
+        if (gql.length === 1) {
+          setVerified(true);
+        }
+      })();
+    }
+  }, [addr, target]);
 
   return (
     <Page>
@@ -95,13 +109,25 @@ const Verify = () => {
             Log In
           </Button>
         ) : (
-          <Card>
-            <Text h3>{target}</Text>
-            <Text h4>{count} verifications</Text>
+          <>
+            <Text h3>Hi there,</Text>
+            <Text>
+              <Code>{target}</Code> wants to get verified by you. If you know
+              this address, and are sure that this address is not used for
+              scamming or involved in any malicious actions, click the button
+              below to verify this address. This address has already been
+              verified <Code>{count}</Code> time(s). The more verifications an
+              address has, the higher the trust score of this address will be.
+              Verifications aren't the only factor for rating an address. By
+              verifying this address, you are also helping our ecosystem stay
+              scam free and have a trusted user-base.
+            </Text>
+            <Divider />
+            <Text h4>{count} verification(s)</Text>
             <Button
               type="secondary"
               loading={loading}
-              disabled={verified}
+              disabled={verified || addr === target}
               onClick={async () => {
                 setLoading(true);
 
@@ -136,16 +162,19 @@ const Verify = () => {
 
                 setLoading(false);
                 setVerified(true);
+
+                router.reload();
               }}
             >
               {verified ? "Verified" : "Verify now"}
             </Button>
-            <Card.Footer>
-              <Text>
-                Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>
-              </Text>
-            </Card.Footer>
-          </Card>
+            <Text>
+              Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>{" "}
+              <Tooltip text="By taking a fee, we disincentivize the creation of fake address networks.">
+                <InfoIcon />
+              </Tooltip>
+            </Text>
+          </>
         )}
       </div>
       <Modal {...bindings}>

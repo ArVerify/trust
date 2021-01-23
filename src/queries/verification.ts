@@ -1,20 +1,17 @@
 export default `
-query($addr: String!, $cursor: String) {
+query($addr: String!, $target: String!) {
   transactions(
-    recipients: [$addr]
+    owners: [$addr]
+    recipients: [$target]
     tags: [
       { name: "Application", values: "ArVerify" }
       { name: "Action", values: "Verification" }
       { name: "Method", values: "Link" }
-      { name: "Address", values: [$addr] }
+      { name: "Address", values: [$target] }
     ]
-    after: $cursor
+    first: 1
   ) {
-    pageInfo {
-      hasNextPage
-    }
     edges {
-      cursor
       node {
         id
       }
