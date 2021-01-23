@@ -162,6 +162,8 @@ const Verify = () => {
 
                 setLoading(false);
                 setVerified(true);
+
+                router.reload();
               }}
             >
               {verified ? "Verified" : "Verify now"}
