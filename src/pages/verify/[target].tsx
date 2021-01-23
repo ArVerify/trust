@@ -1,6 +1,6 @@
 import Arweave from "arweave";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import {useRouter} from "next/router";
+import {useState, useEffect} from "react";
 import {
   useModal,
   Page,
@@ -10,12 +10,12 @@ import {
   Button,
   Modal,
   Card,
-  Code,
+  Code, Link, Tooltip,
 } from "@geist-ui/react";
-import { all } from "ar-gql";
+import {all} from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
-import { FileIcon } from "@primer/octicons-react";
-import { selectTokenHolder } from "../../utils/community";
+import {FileIcon} from "@primer/octicons-react";
+import {selectTokenHolder} from "../../utils/community";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -41,13 +41,13 @@ const Verify = () => {
       }
     })();
   }, []);
-  const { setVisible, bindings } = useModal();
+  const {setVisible, bindings} = useModal();
 
   const [count, setCount] = useState(0);
   const [fee, setFee] = useState(0);
   useEffect(() => {
     (async () => {
-      const gql = await all(verificationsQuery, { addr });
+      const gql = await all(verificationsQuery, {addr});
       setCount(gql.length);
 
       const raw = await fetch(
@@ -77,7 +77,7 @@ const Verify = () => {
               setAddr("");
             }
           }}
-          style={{ cursor: "pointer" }}
+          style={{cursor: "pointer"}}
         >
           {addr === "" ? "Log In" : addr}
         </Text>
@@ -95,62 +95,72 @@ const Verify = () => {
             Log In
           </Button>
         ) : (
-          <Card>
-            <Text h3>{target}</Text>
-            <Text h4>{count} verifications</Text>
-            <Button
-              type="secondary"
-              loading={loading}
-              disabled={verified || addr === target}
-              onClick={async () => {
-                setLoading(true);
+          <>
+            <Text h4>Hi there,</Text>
+            <Text><Code>{target}</Code> wants to be verified. If you know this address and are sure, that this address is not
+              used for scamming or involved into malicious actions, click the Button to verify this address.
+              This address has already been verified <Code>{count}</Code> time(s). The more verifications an address has,
+              the higher will be the trust percentage of this address. Although verifications aren't the only factor for rating an address.
+              By verifying this address, you help our ecosystem to stay scam free and having a trusted user-base.
+            </Text>
+            <Card>
+              <Text h3>{target}</Text>
+              <Text h4>{count} verifications</Text>
+              <Button
+                type="secondary"
+                loading={loading}
+                disabled={verified || addr === target}
+                onClick={async () => {
+                  setLoading(true);
 
-                const jwk = JSON.parse(localStorage.getItem("keyfile"));
+                  const jwk = JSON.parse(localStorage.getItem("keyfile"));
 
-                const tip = await client.createTransaction(
-                  {
-                    target: await selectTokenHolder(),
-                    quantity: client.ar.arToWinston(fee.toString()),
-                  },
-                  jwk
-                );
-                tip.addTag("Application", "ArVerify");
-                tip.addTag("Action", "FEE_Verification");
-                tip.addTag("Address", target);
-                await client.transactions.sign(tip, jwk);
-                await client.transactions.post(tip);
+                  const tip = await client.createTransaction(
+                    {
+                      target: await selectTokenHolder(),
+                      quantity: client.ar.arToWinston(fee.toString()),
+                    },
+                    jwk
+                  );
+                  tip.addTag("Application", "ArVerify");
+                  tip.addTag("Action", "FEE_Verification");
+                  tip.addTag("Address", target);
+                  await client.transactions.sign(tip, jwk);
+                  await client.transactions.post(tip);
 
-                const tx = await client.createTransaction(
-                  {
-                    target,
-                    data: Math.random().toString().slice(-4),
-                  },
-                  jwk
-                );
-                tx.addTag("Application", "ArVerify");
-                tx.addTag("Action", "Verification");
-                tx.addTag("Method", "Link");
-                tx.addTag("Address", target);
-                await client.transactions.sign(tx, jwk);
-                await client.transactions.post(tx);
+                  const tx = await client.createTransaction(
+                    {
+                      target,
+                      data: Math.random().toString().slice(-4),
+                    },
+                    jwk
+                  );
+                  tx.addTag("Application", "ArVerify");
+                  tx.addTag("Action", "Verification");
+                  tx.addTag("Method", "Link");
+                  tx.addTag("Address", target);
+                  await client.transactions.sign(tx, jwk);
+                  await client.transactions.post(tx);
 
-                setLoading(false);
-                setVerified(true);
-              }}
-            >
-              {verified ? "Verified" : "Verify now"}
-            </Button>
-            <Card.Footer>
-              <Text>
-                Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>
-              </Text>
-            </Card.Footer>
-          </Card>
+                  setLoading(false);
+                  setVerified(true);
+                }}
+              >
+                {verified ? "Verified" : "Verify now"}
+              </Button>
+              <Card.Footer>
+                <Text>
+                  Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>
+                </Text>
+                <Tooltip text={'By taking a fee we disincentive, that networks of fake addresses get created.'}>Why do I have to pay fee?</Tooltip>
+              </Card.Footer>
+            </Card>
+          </>
         )}
       </div>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{ textTransform: "none" }}>
+        <Modal.Subtitle style={{textTransform: "none"}}>
           Use your{" "}
           <a
             href="https://www.arweave.org/wallet"
@@ -163,10 +173,10 @@ const Verify = () => {
         </Modal.Subtitle>
         <Modal.Content>
           <Card
-            style={{ border: "1px dashed #333", cursor: "pointer" }}
+            style={{border: "1px dashed #333", cursor: "pointer"}}
             onClick={() => document.getElementById("file").click()}
           >
-            <FileIcon size={24} /> Upload your keyfile
+            <FileIcon size={24}/> Upload your keyfile
           </Card>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
