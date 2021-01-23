@@ -97,7 +97,7 @@ const Verify = () => {
         ) : (
           <>
             <Text h4>Hi there,</Text>
-            <Text><Code>{target}</Code> wants to be verified. If you know this address and are sure, that this address is not
+            <Text><Code>{target}</Code> wants to get verified by you. If you know this address and are sure, that this address is not
               used for scamming or involved into malicious actions, click the Button to verify this address.
               This address has already been verified <Code>{count}</Code> time(s). The more verifications an address has,
               the higher will be the trust percentage of this address. Although verifications aren't the only factor for rating an address.
