@@ -111,7 +111,7 @@ const Verify = () => {
               scam free and have a trusted user-base.
             </Text>
             <Divider />
-            <Text h4>{count} verifications</Text>
+            <Text h4>{count} verification(s)</Text>
             <Button
               type="secondary"
               loading={loading}
@@ -156,11 +156,7 @@ const Verify = () => {
             </Button>
             <Text>
               Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>{" "}
-              <Tooltip
-                text={
-                  "By taking a fee we disincentive, that networks of fake addresses get created."
-                }
-              >
+              <Tooltip text="By taking a fee, we disincentive the creation of fake address networks.">
                 <InfoIcon />
               </Tooltip>
             </Text>
