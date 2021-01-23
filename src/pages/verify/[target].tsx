@@ -14,8 +14,9 @@ import {
   Divider,
   Tooltip,
 } from "@geist-ui/react";
-import { all } from "ar-gql";
+import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
+import verificationQuery from "../../queries/verification";
 import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
 
@@ -62,6 +63,17 @@ const Verify = () => {
 
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
+  useEffect(() => {
+    if (addr && target) {
+      (async () => {
+        const gql = (await run(verificationQuery, { addr, target })).data
+          .transactions.edges;
+        if (gql.length === 1) {
+          setVerified(true);
+        }
+      })();
+    }
+  }, [addr, target]);
 
   return (
     <Page>
