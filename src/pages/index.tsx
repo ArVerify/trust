@@ -159,7 +159,7 @@ const Home = () => {
                   <Text>
                     <Text
                       onClick={() => {
-                        copy(`https://trust.arverify.org/verify/${addr}`);
+                        copy(`https:/${window.location.host}/verify/${addr}`);
                         setToast({
                           text: "Verification link copied to clipboard.",
                           type: "secondary",
