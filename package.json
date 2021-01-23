@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "next dev",
+    "start": "next start -p $PORT",
     "fmt": "prettier --write ."
   },
   "dependencies": {
