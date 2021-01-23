@@ -11,12 +11,12 @@ import {
   Modal,
   Card,
   Code,
-  Link,
+  Divider,
   Tooltip,
 } from "@geist-ui/react";
 import { all } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
-import { FileIcon } from "@primer/octicons-react";
+import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
 
 const client = new Arweave({
@@ -49,7 +49,7 @@ const Verify = () => {
   const [fee, setFee] = useState(0);
   useEffect(() => {
     (async () => {
-      const gql = await all(verificationsQuery, { addr });
+      const gql = await all(verificationsQuery, { addr: target });
       setCount(gql.length);
 
       const raw = await fetch(
@@ -98,76 +98,72 @@ const Verify = () => {
           </Button>
         ) : (
           <>
-            <Text h4>Hi there,</Text>
+            <Text h3>Hi there,</Text>
             <Text>
               <Code>{target}</Code> wants to get verified by you. If you know
-              this address and are sure, that this address is not used for
-              scamming or involved into malicious actions, click the Button to
-              verify this address. This address has already been verified{" "}
-              <Code>{count}</Code> time(s). The more verifications an address
-              has, the higher will be the trust percentage of this address.
-              Although verifications aren't the only factor for rating an
-              address. By verifying this address, you help our ecosystem to stay
-              scam free and having a trusted user-base.
+              this address, and are sure that this address is not used for
+              scamming or involved in any malicious actions, click the button
+              below to verify this address. This address has already been
+              verified <Code>{count}</Code> time(s). The more verifications an
+              address has, the higher the trust score of this address will be.
+              Verifications aren't the only factor for rating an address. By
+              verifying this address, you are also helping our ecosystem stay
+              scam free and have a trusted user-base.
             </Text>
-            <Card>
-              <Text h3>{target}</Text>
-              <Text h4>{count} verifications</Text>
-              <Button
-                type="secondary"
-                loading={loading}
-                disabled={verified || addr === target}
-                onClick={async () => {
-                  setLoading(true);
+            <Divider />
+            <Text h4>{count} verifications</Text>
+            <Button
+              type="secondary"
+              loading={loading}
+              disabled={verified || addr === target}
+              onClick={async () => {
+                setLoading(true);
 
-                  const jwk = JSON.parse(localStorage.getItem("keyfile"));
+                const jwk = JSON.parse(localStorage.getItem("keyfile"));
 
-                  const tip = await client.createTransaction(
-                    {
-                      target: await selectTokenHolder(),
-                      quantity: client.ar.arToWinston(fee.toString()),
-                    },
-                    jwk
-                  );
-                  tip.addTag("Application", "ArVerify");
-                  tip.addTag("Action", "FEE_Verification");
-                  tip.addTag("Address", target);
-                  await client.transactions.sign(tip, jwk);
-                  await client.transactions.post(tip);
+                const tip = await client.createTransaction(
+                  {
+                    target: await selectTokenHolder(),
+                    quantity: client.ar.arToWinston(fee.toString()),
+                  },
+                  jwk
+                );
+                tip.addTag("Application", "ArVerify");
+                tip.addTag("Action", "FEE_Verification");
+                tip.addTag("Address", target);
+                await client.transactions.sign(tip, jwk);
+                await client.transactions.post(tip);
 
-                  const tx = await client.createTransaction(
-                    {
-                      target,
-                      data: Math.random().toString().slice(-4),
-                    },
-                    jwk
-                  );
-                  tx.addTag("Application", "ArVerify");
-                  tx.addTag("Action", "Verification");
-                  tx.addTag("Method", "Link");
-                  tx.addTag("Address", target);
-                  await client.transactions.sign(tx, jwk);
-                  await client.transactions.post(tx);
+                const tx = await client.createTransaction(
+                  {
+                    target,
+                    data: Math.random().toString().slice(-4),
+                  },
+                  jwk
+                );
+                tx.addTag("Application", "ArVerify");
+                tx.addTag("Action", "Verification");
+                tx.addTag("Method", "Link");
+                tx.addTag("Address", target);
+                await client.transactions.sign(tx, jwk);
+                await client.transactions.post(tx);
 
-                  setLoading(false);
-                  setVerified(true);
-                }}
+                setLoading(false);
+                setVerified(true);
+              }}
+            >
+              {verified ? "Verified" : "Verify now"}
+            </Button>
+            <Text>
+              Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>{" "}
+              <Tooltip
+                text={
+                  "By taking a fee we disincentive, that networks of fake addresses get created."
+                }
               >
-                {verified ? "Verified" : "Verify now"}
-              </Button>
-              <Card.Footer>
-                <Text>
-                  Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>
-                </Text>
-                <Tooltip
-                  text={
-                    "By taking a fee we disincentive, that networks of fake addresses get created."
-                  }
-                >
-                  Why do I have to pay fee?
-                </Tooltip>
-              </Card.Footer>
-            </Card>
+                <InfoIcon />
+              </Tooltip>
+            </Text>
           </>
         )}
       </div>
