@@ -156,7 +156,7 @@ const Verify = () => {
             </Button>
             <Text>
               Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>{" "}
-              <Tooltip text="By taking a fee, we disincentive the creation of fake address networks.">
+              <Tooltip text="By taking a fee, we disincentivize the creation of fake address networks.">
                 <InfoIcon />
               </Tooltip>
             </Text>
