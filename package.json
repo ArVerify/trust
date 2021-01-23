@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start -p $PORT",
+    "heroku-postbuild": "npm run build",
     "fmt": "prettier --write ."
   },
   "dependencies": {
