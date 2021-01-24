@@ -177,17 +177,17 @@ const Home = () => {
               <>
                 <Text h3>Welcome {addr}!</Text>
                 <Text>
-                  Below you can see your trust score calculated by ArVerify. Our
-                  score is calculated based on multiple metrics, including your
+                  Below you can see your trust score calculated by ArVerify. It
+                  is calculated based on multiple metrics, especially your
                   activity in the Arweave ecosystem. Try to keep your
-                  trust-score healthy by keeping it in the upper 80 percent.
-                  Other applications use our trust-score to ensure having a
-                  trusted user-base. If your score is unhealthy you can click on
-                  the clipboard icon to copy your verification link. Send this
-                  link to other Arweave users, that they verify you. Based on
-                  with whom you interact, it might be, that you have a high
-                  trust-score although having 0 verifications. This means, that
-                  you are interacting with other trusted users. Well done!
+                  trust-score healthy, in the upper 80 percent. Other
+                  applications use our scores to ensure a trusted user-base. If
+                  your score is unhealthy you can click on the clipboard icon to
+                  copy your verification link. Send this to other Arweave users,
+                  so that they can verify you. Based on whom you interact with,
+                  it might be that you have a high trust-score even with zero
+                  verifications. This means that you are interacting with other
+                  trusted users. Well done!
                 </Text>
                 <Row justify={"space-around"}>
                   <Col span={10}>
