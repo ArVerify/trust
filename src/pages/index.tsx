@@ -67,7 +67,7 @@ const Home = () => {
       setScore(res.score);
 
       const now = moment();
-      const then = moment(res.updated_at);
+      const then = moment.utc(res.updated_at);
       const diff = moment.duration(-now.diff(then));
       setTime(diff.humanize(true));
       setTimestamp(moment.utc(res.updated_at).local().format('L LTS'))
