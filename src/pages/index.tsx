@@ -149,22 +149,30 @@ const Home = () => {
         ) : (
           <>
             {failed ? (
-              <Button
-                type="secondary"
-                onClick={async () => {
-                  await fetch(`https://arverify-trust.herokuapp.com/score`, {
-                    method: "POST",
-                    headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ address: addr }),
-                  });
-                  setFailed(false);
-                }}
-              >
-                Submit your address
-              </Button>
+              <>
+                <Text h3>Hello!</Text>
+                <Text>
+                  Your address has not been indexed yet. Click the button below
+                  to index your address, you score will be updated in the next
+                  24 hours.
+                </Text>
+                <Button
+                  type="secondary"
+                  onClick={async () => {
+                    await fetch(`https://arverify-trust.herokuapp.com/score`, {
+                      method: "POST",
+                      headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({ address: addr }),
+                    });
+                    setFailed(false);
+                  }}
+                >
+                  Submit your address
+                </Button>
+              </>
             ) : (
               <>
                 <Text h3>Welcome {addr}!</Text>
