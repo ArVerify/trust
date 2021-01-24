@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { all } from "ar-gql";
 import verificationsQuery from "../queries/verifications";
+import addressVerifiedQuery from "../queries/addressVerified";
 import {
   useModal,
   useToasts,
@@ -20,8 +21,10 @@ import {
   Progress,
   useTheme,
   Tooltip,
+  Code,
 } from "@geist-ui/react";
 import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
+import addressVerified from "../queries/addressVerified";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -50,6 +53,7 @@ const Home = () => {
   const [time, setTime] = useState("");
   const [timestamp, setTimestamp] = useState("");
   const [count, setCount] = useState(0);
+  const [addressHasVerified, setAddressHasVerified] = useState([]);
 
   const fetchData = async () => {
     moment.locale(navigator.language);
@@ -75,6 +79,13 @@ const Home = () => {
 
       const gql = await all(verificationsQuery, { addr });
       setCount(gql.length);
+
+      const result = await all(addressVerifiedQuery, { addr });
+      setAddressHasVerified(
+        result.map((r) => {
+          return r.node.recipient;
+        })
+      );
     }
     if (status === "SUBMITTED") {
       setStatus("warning");
@@ -158,13 +169,18 @@ const Home = () => {
             ) : (
               <>
                 <Text h3>Welcome {addr}!</Text>
-                <Text>Below you can see your trust score calculated by ArVerify. Our score is
-                  calculated based on multiple metrics, including your activity in the Arweave ecosystem. Try to keep
-                  your trust-score healthy by keeping it in the upper 80 percent. Other applications use our trust-score to
-                  ensure having a trusted user-base. If your score is unhealthy you can click on the clipboard icon to copy your
-                  verification link. Send this link to other Arweave users, that they verify you. Based on with whom you interact,
-                  it might be, that you have a high trust-score although having 0 verifications. This means, that you are interacting
-                  with other trusted users. Well done!
+                <Text>
+                  Below you can see your trust score calculated by ArVerify. Our
+                  score is calculated based on multiple metrics, including your
+                  activity in the Arweave ecosystem. Try to keep your
+                  trust-score healthy by keeping it in the upper 80 percent.
+                  Other applications use our trust-score to ensure having a
+                  trusted user-base. If your score is unhealthy you can click on
+                  the clipboard icon to copy your verification link. Send this
+                  link to other Arweave users, that they verify you. Based on
+                  with whom you interact, it might be, that you have a high
+                  trust-score although having 0 verifications. This means, that
+                  you are interacting with other trusted users. Well done!
                 </Text>
                 <Row gap={0.8} justify="space-around">
                   <Col>
@@ -180,7 +196,7 @@ const Home = () => {
                           100: theme.palette.success,
                         }}
                       />
-                      <Spacer y={1}/>
+                      <Spacer y={1} />
                       <Text h4>{count} verification(s)</Text>
                       <Card.Footer>
                         <Text>
@@ -198,16 +214,22 @@ const Home = () => {
                           >
                             <ClippyIcon /> Copy verification link.
                           </Text>
-                          <Spacer y={0.5}/>
-                          <Tooltip text={`Last updated at: ${timestamp}`} placement="bottom">
-                            <ClockIcon/> {time}
+                          <Spacer y={0.5} />
+                          <Tooltip
+                            text={`Last updated at: ${timestamp}`}
+                            placement="bottom"
+                          >
+                            <ClockIcon /> {time}
                           </Tooltip>
                         </Text>
                       </Card.Footer>
                     </Card>
                   </Col>
                   <Col>
-                    <Text h2>You have verified:</Text>
+                    <Text h4>You have verified:</Text>
+                    {addressHasVerified.map((address) => {
+                      return <Code>{address}</Code>;
+                    })}
                   </Col>
                 </Row>
               </>
