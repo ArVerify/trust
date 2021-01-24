@@ -57,7 +57,7 @@ const Verify = () => {
         "https://api.coingecko.com/api/v3/simple/price?ids=arweave&vs_currencies=usd"
       );
       const res = await raw.clone().json();
-      setFee(parseFloat((1 / res.arweave.usd).toFixed(4)));
+      setFee(Math.max(0.1, parseFloat((0.5 / res.arweave.usd).toFixed(4))));
     })();
   });
 
@@ -104,78 +104,76 @@ const Verify = () => {
           transform: "translateX(-50%) translateY(-50%)",
         }}
       >
+        <Text h3>Hi there,</Text>
+        <Text>
+          <Code>{target}</Code> wants to get verified by you. If you know this
+          address, and are sure that this address is not used for scamming or
+          involved in any malicious actions, click the button below to verify
+          this address. This address has already been verified{" "}
+          <Code>{count}</Code> time(s). The more verifications an address has,
+          the higher the trust score of this address will be. Verifications
+          aren't the only factor for rating an address. By verifying this
+          address, you are also helping our ecosystem stay scam free and have a
+          trusted user-base.
+        </Text>
+        <Divider />
+        <Text h4>{count} verification(s)</Text>
         {addr === "" ? (
           <Button type="secondary" onClick={() => setVisible(true)}>
             Log In
           </Button>
         ) : (
-          <>
-            <Text h3>Hi there,</Text>
-            <Text>
-              <Code>{target}</Code> wants to get verified by you. If you know
-              this address, and are sure that this address is not used for
-              scamming or involved in any malicious actions, click the button
-              below to verify this address. This address has already been
-              verified <Code>{count}</Code> time(s). The more verifications an
-              address has, the higher the trust score of this address will be.
-              Verifications aren't the only factor for rating an address. By
-              verifying this address, you are also helping our ecosystem stay
-              scam free and have a trusted user-base.
-            </Text>
-            <Divider />
-            <Text h4>{count} verification(s)</Text>
-            <Button
-              type="secondary"
-              loading={loading}
-              disabled={verified || addr === target}
-              onClick={async () => {
-                setLoading(true);
+          <Button
+            type="secondary"
+            loading={loading}
+            disabled={verified || addr === target}
+            onClick={async () => {
+              setLoading(true);
 
-                const jwk = JSON.parse(localStorage.getItem("keyfile"));
+              const jwk = JSON.parse(localStorage.getItem("keyfile"));
 
-                const tip = await client.createTransaction(
-                  {
-                    target: await selectTokenHolder(),
-                    quantity: client.ar.arToWinston(fee.toString()),
-                  },
-                  jwk
-                );
-                tip.addTag("Application", "ArVerify");
-                tip.addTag("Action", "FEE_Verification");
-                tip.addTag("Address", target);
-                await client.transactions.sign(tip, jwk);
-                await client.transactions.post(tip);
+              const tip = await client.createTransaction(
+                {
+                  target: await selectTokenHolder(),
+                  quantity: client.ar.arToWinston(fee.toString()),
+                },
+                jwk
+              );
+              tip.addTag("Application", "ArVerify");
+              tip.addTag("Action", "FEE_Verification");
+              tip.addTag("Address", target);
+              await client.transactions.sign(tip, jwk);
+              await client.transactions.post(tip);
 
-                const tx = await client.createTransaction(
-                  {
-                    target,
-                    data: Math.random().toString().slice(-4),
-                  },
-                  jwk
-                );
-                tx.addTag("Application", "ArVerify");
-                tx.addTag("Action", "Verification");
-                tx.addTag("Method", "Link");
-                tx.addTag("Address", target);
-                await client.transactions.sign(tx, jwk);
-                await client.transactions.post(tx);
+              const tx = await client.createTransaction(
+                {
+                  target,
+                  data: Math.random().toString().slice(-4),
+                },
+                jwk
+              );
+              tx.addTag("Application", "ArVerify");
+              tx.addTag("Action", "Verification");
+              tx.addTag("Method", "Link");
+              tx.addTag("Address", target);
+              await client.transactions.sign(tx, jwk);
+              await client.transactions.post(tx);
 
-                setLoading(false);
-                setVerified(true);
+              setLoading(false);
+              setVerified(true);
 
-                router.reload();
-              }}
-            >
-              {verified ? "Verified" : "Verify now"}
-            </Button>
-            <Text>
-              Fee: <Code>{fee} AR</Code> ~ <Code>$1.00</Code>{" "}
-              <Tooltip text="By taking a fee, we disincentivize the creation of fake address networks.">
-                <InfoIcon />
-              </Tooltip>
-            </Text>
-          </>
+              router.reload();
+            }}
+          >
+            {verified ? "Verified" : "Verify now"}
+          </Button>
         )}
+        <Text>
+          Fee: <Code>{fee} AR</Code>{" "}
+          <Tooltip text="By taking a fee, we disincentivize the creation of fake address networks.">
+            <InfoIcon />
+          </Tooltip>
+        </Text>
       </div>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
