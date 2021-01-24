@@ -1,7 +1,7 @@
 import Arweave from "arweave";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import moment from "moment";
-import { all } from "ar-gql";
+import {all} from "ar-gql";
 import verificationsQuery from "../queries/verifications";
 import {
   useModal,
@@ -20,7 +20,7 @@ import {
   Progress,
   useTheme,
 } from "@geist-ui/react";
-import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
+import {FileIcon, ClippyIcon, ClockIcon} from "@primer/octicons-react";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -39,7 +39,7 @@ const Home = () => {
       }
     })();
   }, []);
-  const { setVisible, bindings } = useModal();
+  const {setVisible, bindings} = useModal();
 
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -69,7 +69,7 @@ const Home = () => {
       const diff = moment.duration(-now.diff(then));
       setTime(diff.humanize(true));
 
-      const gql = await all(verificationsQuery, { addr });
+      const gql = await all(verificationsQuery, {addr});
       setCount(gql.length);
     }
     if (status === "SUBMITTED") {
@@ -95,7 +95,7 @@ const Home = () => {
   }, [addr, failed]);
 
   const [, setToast] = useToasts();
-  const { copy } = useClipboard();
+  const {copy} = useClipboard();
 
   return (
     <Page>
@@ -115,7 +115,7 @@ const Home = () => {
               setAddr("");
             }
           }}
-          style={{ cursor: "pointer" }}
+          style={{cursor: "pointer"}}
         >
           {addr === "" ? "Log In" : addr}
         </Text>
@@ -144,7 +144,7 @@ const Home = () => {
                       Accept: "application/json",
                       "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ address: addr }),
+                    body: JSON.stringify({address: addr}),
                   });
                   setFailed(false);
                 }}
@@ -155,25 +155,19 @@ const Home = () => {
               <>
                 <Row gap={0.8} justify="space-around">
                   <Col>
-                    <Text h2> Your status:</Text>
-                    <Text h4> Trust score: {percentage}%</Text>
-                    <Progress
-                      value={percentage}
-                      colors={{
-                        30: theme.palette.error,
-                        80: theme.palette.warning,
-                        100: theme.palette.success,
-                      }}
-                    />
-                    <Spacer y={1} />
-                    <Text h4> Verifications: {count}</Text>
-                    <Button>Copy verification Link</Button>
                     <Card>
-                      <Text h2>
-                        {/* @ts-ignore */}
-                        {/* <Dot type={status} /> */}
+                      <Text h2 style={{textAlign: "center"}}>
                         {`${percentage}%`}
                       </Text>
+                      <Progress
+                        value={percentage}
+                        colors={{
+                          30: theme.palette.error,
+                          80: theme.palette.warning,
+                          100: theme.palette.success,
+                        }}
+                      />
+                      <Spacer y={1}/>
                       <Text h4>{count} verifications</Text>
                       <Card.Footer>
                         <Text>
@@ -187,12 +181,12 @@ const Home = () => {
                                 type: "secondary",
                               });
                             }}
-                            style={{ cursor: "pointer" }}
+                            style={{cursor: "pointer"}}
                           >
-                            <ClippyIcon /> Copy verification link.
+                            <ClippyIcon/> Copy verification link.
                           </Text>
-                          <Spacer y={0.5} />
-                          <ClockIcon /> {time}
+                          <Spacer y={0.5}/>
+                          <ClockIcon/> {time}
                         </Text>
                       </Card.Footer>
                     </Card>
@@ -208,7 +202,7 @@ const Home = () => {
       </div>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{ textTransform: "none" }}>
+        <Modal.Subtitle style={{textTransform: "none"}}>
           Use your{" "}
           <a
             href="https://www.arweave.org/wallet"
@@ -221,10 +215,10 @@ const Home = () => {
         </Modal.Subtitle>
         <Modal.Content>
           <Card
-            style={{ border: "1px dashed #333", cursor: "pointer" }}
+            style={{border: "1px dashed #333", cursor: "pointer"}}
             onClick={() => document.getElementById("file").click()}
           >
-            <FileIcon size={24} /> Upload your keyfile
+            <FileIcon size={24}/> Upload your keyfile
           </Card>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
