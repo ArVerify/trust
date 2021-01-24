@@ -153,7 +153,7 @@ const Home = () => {
                 <Text h3>Hello!</Text>
                 <Text>
                   Your address has not been indexed yet. Click the button below
-                  to index your address, you score will be updated in the next
+                  to index your address, your score will be updated in the next
                   24 hours.
                 </Text>
                 <Button
