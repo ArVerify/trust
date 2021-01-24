@@ -18,7 +18,7 @@ import {
   Modal,
   Col,
   Progress,
-  useTheme,
+  useTheme, Tooltip,
 } from "@geist-ui/react";
 import {FileIcon, ClippyIcon, ClockIcon} from "@primer/octicons-react";
 
@@ -47,9 +47,11 @@ const Home = () => {
   const [percentage, setPercentage] = useState(0);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState("");
+  const [timestamp, setTimestamp] = useState("");
   const [count, setCount] = useState(0);
 
   const fetchData = async () => {
+    moment.locale(navigator.language)
     const raw = await fetch(
       `https://arverify-trust.herokuapp.com/score/${addr}`
     );
@@ -68,6 +70,7 @@ const Home = () => {
       const then = moment(res.updated_at);
       const diff = moment.duration(-now.diff(then));
       setTime(diff.humanize(true));
+      setTimestamp(moment.utc(res.updated_at).local().format('L LTS'))
 
       const gql = await all(verificationsQuery, {addr});
       setCount(gql.length);
@@ -186,7 +189,7 @@ const Home = () => {
                             <ClippyIcon/> Copy verification link.
                           </Text>
                           <Spacer y={0.5}/>
-                          <ClockIcon/> {time}
+                          <Tooltip text={`Last updated at: ${timestamp}`}><ClockIcon/> {time}</Tooltip>
                         </Text>
                       </Card.Footer>
                     </Card>
