@@ -126,7 +126,7 @@ const Home = () => {
       <div
         style={{
           position: "absolute",
-          top: "35%",
+          top: "45%",
           left: "50%",
           transform: "translateX(-50%) translateY(-50%)",
         }}
@@ -156,6 +156,15 @@ const Home = () => {
               </Button>
             ) : (
               <>
+                <Text h3>Welcome {addr}!</Text>
+                <Text>Below you can see your trust score calculated by ArVerify. Our score is
+                  calculated based on multiple metrics, including your activity in the Arweave ecosystem. Try to keep
+                  your trust-score healthy by keeping it in the upper 80 percent. Other applications use our trust-score to
+                  ensure having a trusted user-base. If your score is unhealthy you can click on the clipboard icon to copy your
+                  verification link. Send this link to other Arweave users, that they verify you. Based on with whom you interact,
+                  it might be, that you have a high trust-score although having 0 verifications. This means, that you are interacting
+                  with other trusted users. Well done!
+                </Text>
                 <Row gap={0.8} justify="space-around">
                   <Col>
                     <Card>
@@ -171,7 +180,7 @@ const Home = () => {
                         }}
                       />
                       <Spacer y={1}/>
-                      <Text h4>{count} verifications</Text>
+                      <Text h4>{count} verification(s)</Text>
                       <Card.Footer>
                         <Text>
                           <Text
@@ -189,7 +198,9 @@ const Home = () => {
                             <ClippyIcon/> Copy verification link.
                           </Text>
                           <Spacer y={0.5}/>
-                          <Tooltip text={`Last updated at: ${timestamp}`}><ClockIcon/> {time}</Tooltip>
+                          <Tooltip text={`Last updated at: ${timestamp}`} placement="bottom">
+                            <ClockIcon/> {time}
+                          </Tooltip>
                         </Text>
                       </Card.Footer>
                     </Card>
