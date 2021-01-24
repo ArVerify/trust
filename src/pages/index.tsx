@@ -1,7 +1,7 @@
 import Arweave from "arweave";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import moment from "moment";
-import { all } from "ar-gql";
+import {all} from "ar-gql";
 import verificationsQuery from "../queries/verifications";
 import addressVerifiedQuery from "../queries/addressVerified";
 import {
@@ -23,8 +23,7 @@ import {
   Tooltip,
   Code,
 } from "@geist-ui/react";
-import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
-import addressVerified from "../queries/addressVerified";
+import {FileIcon, ClippyIcon, ClockIcon} from "@primer/octicons-react";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -43,7 +42,7 @@ const Home = () => {
       }
     })();
   }, []);
-  const { setVisible, bindings } = useModal();
+  const {setVisible, bindings} = useModal();
 
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -77,10 +76,10 @@ const Home = () => {
       setTime(diff.humanize(true));
       setTimestamp(moment.utc(res.updated_at).local().format("L LTS"));
 
-      const gql = await all(verificationsQuery, { addr });
+      const gql = await all(verificationsQuery, {addr});
       setCount(gql.length);
 
-      const result = await all(addressVerifiedQuery, { addr });
+      const result = await all(addressVerifiedQuery, {addr});
       setAddressHasVerified(
         result.map((r) => {
           return r.node.recipient;
@@ -110,7 +109,7 @@ const Home = () => {
   }, [addr, failed]);
 
   const [, setToast] = useToasts();
-  const { copy } = useClipboard();
+  const {copy} = useClipboard();
 
   return (
     <Page>
@@ -130,7 +129,7 @@ const Home = () => {
               setAddr("");
             }
           }}
-          style={{ cursor: "pointer" }}
+          style={{cursor: "pointer"}}
         >
           {addr === "" ? "Log In" : addr}
         </Text>
@@ -138,7 +137,7 @@ const Home = () => {
       <div
         style={{
           position: "absolute",
-          top: "45%",
+          top: "55%",
           left: "50%",
           transform: "translateX(-50%) translateY(-50%)",
         }}
@@ -159,7 +158,7 @@ const Home = () => {
                       Accept: "application/json",
                       "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ address: addr }),
+                    body: JSON.stringify({address: addr}),
                   });
                   setFailed(false);
                 }}
@@ -182,10 +181,10 @@ const Home = () => {
                   trust-score although having 0 verifications. This means, that
                   you are interacting with other trusted users. Well done!
                 </Text>
-                <Row gap={0.8} justify="space-around">
-                  <Col>
+                <Row justify={"space-around"}>
+                  <Col span={10}>
                     <Card>
-                      <Text h2 style={{ textAlign: "center" }}>
+                      <Text h2 style={{textAlign: "center"}}>
                         {`${percentage}%`}
                       </Text>
                       <Progress
@@ -196,7 +195,7 @@ const Home = () => {
                           100: theme.palette.success,
                         }}
                       />
-                      <Spacer y={1} />
+                      <Spacer y={1}/>
                       <Text h4>{count} verification(s)</Text>
                       <Card.Footer>
                         <Text>
@@ -210,21 +209,24 @@ const Home = () => {
                                 type: "secondary",
                               });
                             }}
-                            style={{ cursor: "pointer" }}
+                            style={{cursor: "pointer"}}
                           >
-                            <ClippyIcon /> Copy verification link.
+                            <ClippyIcon/> Copy verification link.
                           </Text>
-                          <Spacer y={0.5} />
+                          <Spacer y={0.5}/>
                           <Tooltip
                             text={`Last updated at: ${timestamp}`}
                             placement="bottom"
                           >
-                            <ClockIcon /> {time}
+                            <ClockIcon/> {time}
                           </Tooltip>
                         </Text>
                       </Card.Footer>
                     </Card>
                   </Col>
+                </Row>
+                <Spacer y={2}/>
+                <Row>
                   <Col>
                     <Text h4>You have verified:</Text>
                     {addressHasVerified.map((address) => {
@@ -239,7 +241,7 @@ const Home = () => {
       </div>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{ textTransform: "none" }}>
+        <Modal.Subtitle style={{textTransform: "none"}}>
           Use your{" "}
           <a
             href="https://www.arweave.org/wallet"
@@ -252,10 +254,10 @@ const Home = () => {
         </Modal.Subtitle>
         <Modal.Content>
           <Card
-            style={{ border: "1px dashed #333", cursor: "pointer" }}
+            style={{border: "1px dashed #333", cursor: "pointer"}}
             onClick={() => document.getElementById("file").click()}
           >
-            <FileIcon size={24} /> Upload your keyfile
+            <FileIcon size={24}/> Upload your keyfile
           </Card>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
