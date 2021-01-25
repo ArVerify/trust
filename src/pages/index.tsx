@@ -57,7 +57,7 @@ const Home = () => {
   const fetchData = async () => {
     moment.locale(navigator.language);
     const raw = await fetch(
-      `https://arverify-trust.herokuapp.com/score/${addr}`
+      `https://api.arverify.org/score/${addr}`
     );
     const res = await raw.clone().json();
 
@@ -120,7 +120,8 @@ const Home = () => {
           </Breadcrumbs.Item>
           <Breadcrumbs.Item>Trust</Breadcrumbs.Item>
         </Breadcrumbs>
-        <Text
+        <Tooltip text={"Click here to logout"}>
+          <Text
           onClick={() => {
             if (addr === "") {
               setVisible(true);
@@ -133,6 +134,7 @@ const Home = () => {
         >
           {addr === "" ? "Log In" : addr}
         </Text>
+        </Tooltip>
       </Row>
       <div
         style={{
@@ -159,7 +161,7 @@ const Home = () => {
                 <Button
                   type="secondary"
                   onClick={async () => {
-                    await fetch(`https://arverify-trust.herokuapp.com/score`, {
+                    await fetch(`https://api.arverify.org/score`, {
                       method: "POST",
                       headers: {
                         Accept: "application/json",
