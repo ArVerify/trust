@@ -19,7 +19,9 @@ function App({ Component, pageProps }) {
       }}
     >
       <CssBaseline />
-      <Head><title>ArVerify - Trust</title></Head>
+      <Head>
+        <title>ArVerify - Trust</title>
+      </Head>
       <Component {...pageProps} />
     </GeistProvider>
   );

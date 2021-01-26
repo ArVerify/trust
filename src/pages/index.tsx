@@ -14,7 +14,6 @@ import {
   Text,
   Button,
   Card,
-  Dot,
   Spacer,
   Modal,
   Col,
@@ -56,9 +55,7 @@ const Home = () => {
 
   const fetchData = async () => {
     moment.locale(navigator.language);
-    const raw = await fetch(
-      `https://api.arverify.org/score/${addr}`
-    );
+    const raw = await fetch(`https://api.arverify.org/score/${addr}`);
     const res = await raw.clone().json();
 
     const status = res.status;
@@ -120,38 +117,50 @@ const Home = () => {
           </Breadcrumbs.Item>
           <Breadcrumbs.Item>Trust</Breadcrumbs.Item>
         </Breadcrumbs>
-        <Tooltip text={"Click here to logout"}>
-          <Text
-          onClick={() => {
-            if (addr === "") {
-              setVisible(true);
-            } else {
-              localStorage.removeItem("keyfile");
-              setAddr("");
-            }
-          }}
-          style={{ cursor: "pointer" }}
+        <Tooltip
+          text={`Click here to ${addr === "" ? "login" : "logout"}`}
+          placement="bottom"
         >
-          {addr === "" ? "Log In" : addr}
-        </Text>
+          <Text
+            onClick={() => {
+              if (addr === "") {
+                setVisible(true);
+              } else {
+                localStorage.removeItem("keyfile");
+                setAddr("");
+              }
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            {addr === "" ? "Log In" : addr}
+          </Text>
         </Tooltip>
       </Row>
-      <div
-        style={{
-          position: "absolute",
-          top: "55%",
-          left: "50%",
-          transform: "translateX(-50%) translateY(-50%)",
-        }}
-      >
+      <>
         {addr === "" ? (
-          <Button type="secondary" onClick={() => setVisible(true)}>
-            Log In
-          </Button>
+          <div
+            style={{
+              position: "absolute",
+              top: "55%",
+              left: "50%",
+              transform: "translateX(-50%) translateY(-50%)",
+            }}
+          >
+            <Button type="secondary" onClick={() => setVisible(true)}>
+              Log In
+            </Button>
+          </div>
         ) : (
           <>
             {failed ? (
-              <>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "55%",
+                  left: "50%",
+                  transform: "translateX(-50%) translateY(-50%)",
+                }}
+              >
                 <Text h3>Hello!</Text>
                 <Text>
                   Your address has not been indexed yet. Click the button below
@@ -174,9 +183,14 @@ const Home = () => {
                 >
                   Submit your address
                 </Button>
-              </>
+              </div>
             ) : (
-              <>
+              <div
+                style={{
+                  margin: "0 auto",
+                  width: "50%",
+                }}
+              >
                 <Text h3>Welcome {addr}!</Text>
                 <Text>
                   Below you can see your trust score calculated by ArVerify. It
@@ -192,63 +206,68 @@ const Home = () => {
                   trusted users. Well done!
                 </Text>
                 <Row justify={"space-around"}>
-                  <Col span={10}>
-                    <Card>
-                      <Text h2 style={{ textAlign: "center" }}>
-                        {`${percentage}%`}
-                      </Text>
-                      <Progress
-                        value={percentage}
-                        colors={{
-                          30: theme.palette.error,
-                          80: theme.palette.warning,
-                          100: theme.palette.success,
-                        }}
-                      />
-                      <Spacer y={1} />
-                      <Text h4>{count} verification(s)</Text>
-                      <Card.Footer>
-                        <Text>
-                          <Text
-                            onClick={() => {
-                              copy(
-                                `https://${window.location.host}/verify/${addr}`
-                              );
-                              setToast({
-                                text: "Verification link copied to clipboard.",
-                                type: "secondary",
-                              });
-                            }}
-                            style={{ cursor: "pointer" }}
-                          >
-                            <ClippyIcon /> Copy verification link.
-                          </Text>
-                          <Spacer y={0.5} />
-                          <Tooltip
-                            text={`Last updated at: ${timestamp}`}
-                            placement="bottom"
-                          >
-                            <ClockIcon /> {time}
-                          </Tooltip>
+                  <Card width="60%">
+                    <Text h2 style={{ textAlign: "center" }}>
+                      {`${percentage}%`}
+                    </Text>
+                    <Progress
+                      value={percentage}
+                      colors={{
+                        30: theme.palette.error,
+                        80: theme.palette.warning,
+                        100: theme.palette.success,
+                      }}
+                    />
+                    <Spacer y={1} />
+                    <Text h4>{count} verification(s)</Text>
+                    <Card.Footer>
+                      <Text>
+                        <Text
+                          onClick={() => {
+                            copy(
+                              `https://${window.location.host}/verify/${addr}`
+                            );
+                            setToast({
+                              text: "Verification link copied to clipboard.",
+                              type: "secondary",
+                            });
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <ClippyIcon /> Copy verification link.
                         </Text>
-                      </Card.Footer>
-                    </Card>
-                  </Col>
+                        <Spacer y={0.5} />
+                        <Tooltip
+                          text={`Last updated at: ${timestamp}`}
+                          placement="bottom"
+                        >
+                          <ClockIcon /> {time}
+                        </Tooltip>
+                      </Text>
+                    </Card.Footer>
+                  </Card>
                 </Row>
                 <Spacer y={2} />
                 <Row>
                   <Col>
                     <Text h4>You have verified:</Text>
-                    {addressHasVerified.map((address) => {
-                      return <Code>{address}</Code>;
-                    })}
+                    <Text>
+                      {addressHasVerified.map((address) => {
+                        return (
+                          <>
+                            <Code>{address}</Code>
+                            <Spacer y={0} />
+                          </>
+                        );
+                      })}
+                    </Text>
                   </Col>
                 </Row>
-              </>
+              </div>
             )}
           </>
         )}
-      </div>
+      </>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
         <Modal.Subtitle style={{ textTransform: "none" }}>
