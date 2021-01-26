@@ -1,5 +1,6 @@
 import { GeistProvider, CssBaseline } from "@geist-ui/react";
 import { useState, useEffect } from "react";
+import Head from "next/head";
 
 function App({ Component, pageProps }) {
   const [theme, setTheme] = useState("");
@@ -18,6 +19,7 @@ function App({ Component, pageProps }) {
       }}
     >
       <CssBaseline />
+      <Head><title>ArVerify - Trust</title></Head>
       <Component {...pageProps} />
     </GeistProvider>
   );
