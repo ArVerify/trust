@@ -161,7 +161,7 @@ const Verify = () => {
               // community xyz activity tags
               tx.addTag('Service', 'ArVerify');
               tx.addTag('Community-ID', COMMUNITY_ID);
-              tx.addTag('Message', `${target} has been verified by ${addr} through their sharable link`);
+              tx.addTag('Message', `${target} was verified through their sharable link`);
               tx.addTag('Type', 'ArweaveActivity');
 
               await client.transactions.sign(tx, jwk);
