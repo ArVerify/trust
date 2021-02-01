@@ -107,15 +107,11 @@ const Verify = () => {
       >
         <Text h3>Hi there,</Text>
         <Text>
-          <Code>{target}</Code> wants to get verified by you. If you know this
-          address, and are sure that this address is not used for scamming or
-          involved in any malicious actions, click the button below to verify
-          this address. This address has already been verified{" "}
-          <Code>{count}</Code> time(s). The more verifications an address has,
-          the higher the trust score of this address will be. Verifications
-          aren't the only factor for rating an address. By verifying this
-          address, you are also helping our ecosystem stay scam free and have a
-          trusted user-base.
+          <Code>{target}</Code> wants to be verified by you on ArVerify.
+          ArVerify is a trust score for the permaweb which is often used by
+          developers to ensure that their users are trustworthy humans, and not
+          bots. Do you know this user? If so, hit the button below to help them
+          raise their trust score on the decentralised web!
         </Text>
         <Divider />
         <Text h4>{count} verification(s)</Text>

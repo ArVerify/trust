@@ -20,9 +20,15 @@ import {
   Progress,
   useTheme,
   Tooltip,
-  Code, Link,
+  Code,
+  Link,
 } from "@geist-ui/react";
-import { FileIcon, ClippyIcon, ClockIcon, ShareAndroidIcon } from "@primer/octicons-react";
+import {
+  FileIcon,
+  ClippyIcon,
+  ClockIcon,
+  ShareAndroidIcon,
+} from "@primer/octicons-react";
 import { URLSearchParams } from "url";
 
 const client = new Arweave({
@@ -192,19 +198,15 @@ const Home = () => {
                   width: "50%",
                 }}
               >
-                <Text h3>Welcome {addr}!</Text>
+                <Text h3>Welcome!</Text>
+                <Text h4>Your current trust-score is {percentage}%</Text>
                 <Text>
-                  Below you can see your trust score calculated by ArVerify. It
-                  is calculated based on multiple metrics, especially your
-                  activity in the Arweave ecosystem. Try to keep your
-                  trust-score healthy, in the upper 80 percent. Other
-                  applications use our scores to ensure a trusted user-base. If
-                  your score is unhealthy you can click on the clipboard icon to
-                  copy your verification link. Send this to other Arweave users,
-                  so that they can verify you. Based on whom you interact with,
-                  it might be that you have a high trust-score even with zero
-                  verifications. This means that you are interacting with other
-                  trusted users. Well done!
+                  Many applications on the permaweb [LINK] use ArVerify to
+                  ensure that only trustworthy, human user's posts are shown. By
+                  obtaining a healthy verification score, you can ensure that
+                  you are trusted by applications on the permaweb. To increase
+                  your score simply ask a friend to verify you, or purchase a
+                  third-party verification.
                 </Text>
                 <Row justify={"space-around"}>
                   <Card width="60%">
@@ -220,7 +222,7 @@ const Home = () => {
                       }}
                     />
                     <Spacer y={1} />
-                    <Text h4>{count} verification(s)</Text>
+                    <Text h4>You have {count} verification(s)</Text>
                     <Card.Footer>
                       <Text>
                         <Text
