@@ -1,6 +1,6 @@
 import Arweave from "arweave";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useModal,
   Page,
@@ -117,7 +117,7 @@ const Verify = () => {
         <Text h4>{count} verification(s)</Text>
         {addr === "" ? (
           <Button type="secondary" onClick={() => setVisible(true)}>
-            Log In
+            Sign in with your key file
           </Button>
         ) : (
           <Button
