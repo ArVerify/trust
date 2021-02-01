@@ -154,7 +154,7 @@ const Home = () => {
             }}
           >
             <Button type="secondary" onClick={() => setVisible(true)}>
-              Log In
+              Sign in with your key file
             </Button>
           </div>
         ) : (
