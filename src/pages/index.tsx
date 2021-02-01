@@ -195,76 +195,84 @@ const Home = () => {
               <div
                 style={{
                   margin: "0 auto",
-                  width: "50%",
+                  width: "80%",
                 }}
               >
-                <Text h3>Welcome!</Text>
-                <Text h4>Your current trust-score is {percentage}%</Text>
-                <Text>
-                  Many applications on the permaweb [LINK] use ArVerify to
-                  ensure that only trustworthy, human user's posts are shown. By
-                  obtaining a healthy verification score, you can ensure that
-                  you are trusted by applications on the permaweb. To increase
-                  your score simply ask a friend to verify you, or purchase a
-                  third-party verification.
-                </Text>
+                <Spacer y={2}/>
                 <Row justify={"space-around"}>
-                  <Card width="60%">
-                    <Text h2 style={{ textAlign: "center" }}>
-                      {`${percentage}%`}
+                  <Col>
+                    <Text h3>Welcome!</Text>
+                    <Text h4>Your current trust-score is {percentage}%</Text>
+                    <Text>
+                      Many applications on the permaweb [LINK] use ArVerify to
+                      ensure that only trustworthy, human user's posts are shown. By
+                      obtaining a healthy verification score, you can ensure that
+                      you are trusted by applications on the permaweb. To increase
+                      your score simply ask a friend to verify you, or purchase a
+                      third-party verification.
                     </Text>
-                    <Progress
-                      value={percentage}
-                      colors={{
-                        30: theme.palette.error,
-                        80: theme.palette.warning,
-                        100: theme.palette.success,
-                      }}
-                    />
-                    <Spacer y={1} />
-                    <Text h4>You have {count} verification(s)</Text>
-                    <Card.Footer>
-                      <Text>
-                        <Text
-                          onClick={() => {
-                            copy(
-                              `https://${window.location.host}/verify/${addr}`
-                            );
-                            setToast({
-                              text: "Verification link copied to clipboard.",
-                              type: "secondary",
-                            });
+                  </Col>
+                  <Col>
+                    <Row justify={"space-around"}>
+                      <Card width="80%">
+                        <Text h2 style={{ textAlign: "center" }}>
+                          {`${percentage}%`}
+                        </Text>
+                        <Progress
+                          value={percentage}
+                          colors={{
+                            30: theme.palette.error,
+                            80: theme.palette.warning,
+                            100: theme.palette.success,
                           }}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <ClippyIcon /> Copy verification link.
-                        </Text>
-                        <Text>
-                          <ShareAndroidIcon />
-                          <Link
-                            target="_blank"
-                            className="twitter-share-button"
-                            href={
-                              "https://twitter.com/intent/tweet?text=" +
-                              encodeURIComponent(
-                                `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
-                              )
-                            }
-                          >
-                            Tweet verification link.
-                          </Link>
-                        </Text>
-                        <Spacer y={0.5} />
-                        <Tooltip
-                          text={`Last updated at: ${timestamp}`}
-                          placement="bottom"
-                        >
-                          <ClockIcon /> {time}
-                        </Tooltip>
-                      </Text>
-                    </Card.Footer>
-                  </Card>
+                        />
+                        <Spacer y={1} />
+                        <Text h4>You have {count} verification(s)</Text>
+                        <Card.Footer>
+                          <Text>
+                            <Text
+                              onClick={() => {
+                                copy(
+                                  `https://${window.location.host}/verify/${addr}`
+                                );
+                                setToast({
+                                  text: "Verification link copied to clipboard.",
+                                  type: "secondary",
+                                });
+                              }}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <ClippyIcon /> Copy verification link.
+                            </Text>
+                            <Text>
+                              <ShareAndroidIcon />
+                              <Link
+                                target="_blank"
+                                className="twitter-share-button"
+                                href={
+                                  "https://twitter.com/intent/tweet?text=" +
+                                  encodeURIComponent(
+                                    `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
+                                  )
+                                }
+                              >
+                                Tweet verification link.
+                              </Link>
+                            </Text>
+                            <Spacer y={0.5} />
+                            <Tooltip
+                              text={`Last updated at: ${timestamp}`}
+                              placement="bottom"
+                            >
+                              <ClockIcon /> {time}
+                            </Tooltip>
+                          </Text>
+                        </Card.Footer>
+                      </Card>
+                    </Row>
+                  </Col>
                 </Row>
+
                 <Spacer y={2} />
                 <Row>
                   <Col>
