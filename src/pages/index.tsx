@@ -23,6 +23,7 @@ import {
   Code,
 } from "@geist-ui/react";
 import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
+import { URLSearchParams } from "url";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -235,6 +236,20 @@ const Home = () => {
                           style={{ cursor: "pointer" }}
                         >
                           <ClippyIcon /> Copy verification link.
+                        </Text>
+                        <Text>
+                          <a
+                            target="_blank"
+                            className="twitter-share-button"
+                            href={
+                              "https://twitter.com/intent/tweet?text=" +
+                              encodeURIComponent(
+                                `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
+                              )
+                            }
+                          >
+                            Tweet
+                          </a>
                         </Text>
                         <Spacer y={0.5} />
                         <Tooltip
