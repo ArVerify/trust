@@ -20,9 +20,9 @@ import {
   Progress,
   useTheme,
   Tooltip,
-  Code,
+  Code, Link,
 } from "@geist-ui/react";
-import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
+import { FileIcon, ClippyIcon, ClockIcon, ShareAndroidIcon } from "@primer/octicons-react";
 import { URLSearchParams } from "url";
 
 const client = new Arweave({
@@ -238,7 +238,8 @@ const Home = () => {
                           <ClippyIcon /> Copy verification link.
                         </Text>
                         <Text>
-                          <a
+                          <ShareAndroidIcon />
+                          <Link
                             target="_blank"
                             className="twitter-share-button"
                             href={
@@ -248,8 +249,8 @@ const Home = () => {
                               )
                             }
                           >
-                            Tweet
-                          </a>
+                            Tweet verification link.
+                          </Link>
                         </Text>
                         <Spacer y={0.5} />
                         <Tooltip
