@@ -565,10 +565,10 @@ articles@~0.2.1:
   resolved "https://registry.yarnpkg.com/articles/-/articles-0.2.2.tgz#cc6b429f8cfa811f41e7a08505abbb4e45503197"
   integrity sha512-S3Y4MPp+LD/l0HHm/4yrr6MoXhUkKT98ZdsV2tkTuBNywqUXEtvJT+NBO3KTSQEttc5EOwEJe2Xw8cZ9TI5Hrw==
 
-arverify@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/arverify/-/arverify-0.0.4.tgz#d09cdb818107ece397fc7715cc8bc5c94781772a"
-  integrity sha512-PoFdfmiGmYcemHaUyy41oqpvkHZioi3+nP5IbBpTDuOjzyIQV+JORlZ2hX5Au2QcvcSZ6qS7FhD/vUNZK3/QTg==
+arverify@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/arverify/-/arverify-0.0.5.tgz#249f2c25cb7ca8133c82dfe133c5225932f76476"
+  integrity sha512-N5U0ppf65+omaNBJtZjxr0whnQnu63Hx1xUdhrY8BIWBoPyc/xZg40E4mF6wKz/N2cg0mLR67jC28Awh2QF3yg==
   dependencies:
     ar-gql "^0.0.1"
     arweave "^1.9.1"
@@ -585,20 +585,10 @@ arweave@^1.10.0:
     base64-js "^1.3.1"
     bignumber.js "^8.1.1"
 
-arweave@^1.10.2:
+arweave@^1.10.2, arweave@^1.9.1:
   version "1.10.3"
   resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.10.3.tgz#70bb21ba14ba564aaea7d4c2f9e220beca4d5032"
   integrity sha512-fHIIeMNCO7uhLUmyybI8Xl5c19RAoznjKiK0vUmW3rnzo3Wmy06NZs0M7njN0bKPH+RCaHRDuIhyhETWwKj1sw==
-  dependencies:
-    asn1.js "^5.4.1"
-    axios "^0.21.1"
-    base64-js "^1.3.1"
-    bignumber.js "^8.1.1"
-
-arweave@^1.9.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.10.1.tgz#170c5e1ffc2da13bbe7da39ce7bb2d245be30ab1"
-  integrity sha512-jhJYiZXQnQLLfj9h3fNxV7eHs+xyFPPDHusgOhyqg0PM6/xeD3zoMMBc+68W743pMQAnioHHne2wQXz29krvSA==
   dependencies:
     asn1.js "^5.4.1"
     axios "^0.21.1"
@@ -1932,9 +1922,9 @@ follow-redirects@1.5.10:
     debug "=3.1.0"
 
 follow-redirects@^1.10.0:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.1.tgz#5f69b813376cee4fd0474a3aba835df04ab763b7"
-  integrity sha512-SSG5xmZh1mkPGyKzjZP8zLjltIfpW32Y5QpdNJyjcfGxK3qo3NDDkZOZSFiGn1A6SclQxY9GzEwAHQ3dmYRWpg==
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
+  integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
 
 for-in@^1.0.2:
   version "1.0.2"
