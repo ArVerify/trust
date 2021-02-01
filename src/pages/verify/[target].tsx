@@ -19,7 +19,7 @@ import verificationsQuery from "../../queries/verifications";
 import verificationQuery from "../../queries/verification";
 import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
-import { COMMUNITY as COMMUNITY_ID} from "arverify";
+import { COMMUNITY as COMMUNITY_ID } from "arverify";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -159,10 +159,13 @@ const Verify = () => {
               tx.addTag("Address", target);
 
               // community xyz activity tags
-              tx.addTag('Service', 'ArVerify');
-              tx.addTag('Community-ID', COMMUNITY_ID);
-              tx.addTag('Message', `${target} was verified through their sharable link`);
-              tx.addTag('Type', 'ArweaveActivity');
+              tx.addTag("Service", "ArVerify");
+              tx.addTag("Community-ID", COMMUNITY_ID);
+              tx.addTag(
+                "Message",
+                `${target} was verified through their sharable link`
+              );
+              tx.addTag("Type", "ArweaveActivity");
 
               await client.transactions.sign(tx, jwk);
               await client.transactions.post(tx);
