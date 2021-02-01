@@ -116,9 +116,11 @@ const Verify = () => {
         <Divider />
         <Text h4>{count} verification(s)</Text>
         {addr === "" ? (
-          <Button type="secondary" onClick={() => setVisible(true)}>
-            Sign in with your key file
-          </Button>
+          <>
+            <Button type="secondary" onClick={() => setVisible(true)}>
+              Sign in with your key file
+            </Button>
+          </>
         ) : (
           <Button
             type="secondary"

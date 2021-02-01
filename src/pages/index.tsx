@@ -153,6 +153,15 @@ const Home = () => {
               transform: "translateX(-50%) translateY(-50%)",
             }}
           >
+            <Text h3>
+              The next web will be defined by <Code>trust</Code>.
+            </Text>
+            <Text h3>
+              ArVerify is your portal to verification on every app, anywhere on
+              the permaweb.
+            </Text>
+            <Text h3>Jump in now.</Text>
+            <Spacer y={4} />
             <Button type="secondary" onClick={() => setVisible(true)}>
               Sign in with your key file
             </Button>
@@ -198,18 +207,22 @@ const Home = () => {
                   width: "80%",
                 }}
               >
-                <Spacer y={2}/>
+                <Spacer y={2} />
                 <Row justify={"space-around"}>
                   <Col>
                     <Text h3>Welcome!</Text>
                     <Text h4>Your current trust-score is {percentage}%</Text>
                     <Text>
-                      Many applications on the permaweb [LINK] use ArVerify to
-                      ensure that only trustworthy, human user's posts are shown. By
-                      obtaining a healthy verification score, you can ensure that
-                      you are trusted by applications on the permaweb. To increase
-                      your score simply ask a friend to verify you, or purchase a
-                      third-party verification.
+                      Many applications on the permaweb{" "}
+                      <Link target="_blank" href="https://arweave.org">
+                        (https://arweave.org)
+                      </Link>{" "}
+                      use ArVerify to ensure that only trustworthy, human user's
+                      posts are shown. By obtaining a healthy verification
+                      score, you can ensure that you are trusted by applications
+                      on the permaweb. To increase your score simply ask a
+                      friend to verify you, or purchase a third-party
+                      verification.
                     </Text>
                   </Col>
                   <Col>
@@ -236,7 +249,8 @@ const Home = () => {
                                   `https://${window.location.host}/verify/${addr}`
                                 );
                                 setToast({
-                                  text: "Verification link copied to clipboard.",
+                                  text:
+                                    "Verification link copied to clipboard.",
                                   type: "secondary",
                                 });
                               }}
