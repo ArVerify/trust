@@ -108,10 +108,15 @@ const Verify = () => {
         <Text h3>Hi there,</Text>
         <Text>
           <Code>{target}</Code> wants to be verified by you on ArVerify.
+        </Text>
+        <Text>
           ArVerify is a trust score for the permaweb which is often used by
           developers to ensure that their users are trustworthy humans, and not
-          bots. Do you know this user? If so, hit the button below to help them
-          raise their trust score on the decentralised web!
+          bots. Do you know this user?
+        </Text>
+        <Text>
+          If so, hit the button below to help them raise their trust score on
+          the decentralised web!
         </Text>
         <Divider />
         <Text h4>{count} verification(s)</Text>
