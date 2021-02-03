@@ -213,16 +213,18 @@ const Home = () => {
                     <Text h3>Welcome!</Text>
                     <Text h4>Your current trust-score is {percentage}%</Text>
                     <Text>
-                      Many applications on the permaweb{" "}
-                      <Link target="_blank" href="https://arweave.org">
-                        (https://arweave.org)
+                      Many applications on the{" "}
+                      <Link target="_blank" href="https://arweave.org" color>
+                        permaweb
                       </Link>{" "}
                       use ArVerify to ensure that only trustworthy, human user's
                       posts are shown. By obtaining a healthy verification
                       score, you can ensure that you are trusted by applications
-                      on the permaweb. To increase your score simply ask a
-                      friend to verify you, or purchase a third-party
-                      verification.
+                      on the permaweb.{" "}
+                    </Text>
+                    <Text>
+                      To increase your score simply ask a friend to verify you,
+                      or purchase a third-party verification.
                     </Text>
                   </Col>
                   <Col>
@@ -292,6 +294,9 @@ const Home = () => {
                   <Col>
                     <Text h4>You have verified:</Text>
                     <Text>
+                      {addressHasVerified.length === 0 && (
+                        <Text>You have not verified anyone.</Text>
+                      )}
                       {addressHasVerified.map((address) => {
                         return (
                           <>
