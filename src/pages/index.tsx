@@ -331,7 +331,7 @@ const Home = () => {
             style={{ border: "1px dashed #333", cursor: "pointer" }}
             onClick={() => document.getElementById("file").click()}
           >
-            <FileIcon size={24} /> Upload your keyfile
+            <FileIcon size={24} /> Sign in with your keyfile
           </Card>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
