@@ -64,6 +64,7 @@ const Verify = () => {
 
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [balance, setBalance] = useState(0);
   useEffect(() => {
     if (addr && target) {
       (async () => {
@@ -72,6 +73,12 @@ const Verify = () => {
         if (gql.length === 1) {
           setVerified(true);
         }
+
+        setBalance(
+          parseFloat(
+            client.ar.winstonToAr(await client.wallets.getBalance(addr))
+          )
+        );
       })();
     }
   }, [addr, target]);
@@ -129,8 +136,8 @@ const Verify = () => {
         ) : (
           <Button
             type="secondary"
-            loading={loading}
-            disabled={verified || addr === target}
+            loading={loading || fee === 0}
+            disabled={verified || addr === target || balance <= fee}
             onClick={async () => {
               setLoading(true);
 
@@ -179,7 +186,11 @@ const Verify = () => {
               router.reload();
             }}
           >
-            {verified ? "Verified" : "Verify now"}
+            {verified
+              ? "Verified"
+              : balance <= fee
+              ? "Insufficient funds"
+              : "Verify now"}
           </Button>
         )}
         <Text>
