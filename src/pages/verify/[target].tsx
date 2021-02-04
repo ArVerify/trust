@@ -1,6 +1,6 @@
 import Arweave from "arweave";
-import {useRouter} from "next/router";
-import React, {useState, useEffect} from "react";
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 import {
   useModal,
   Page,
@@ -14,12 +14,12 @@ import {
   Divider,
   Tooltip,
 } from "@geist-ui/react";
-import {all, run} from "ar-gql";
+import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
 import verificationQuery from "../../queries/verification";
-import {FileIcon, InfoIcon} from "@primer/octicons-react";
-import {selectTokenHolder} from "../../utils/community";
-import {COMMUNITY as COMMUNITY_ID} from "arverify";
+import { FileIcon, InfoIcon } from "@primer/octicons-react";
+import { selectTokenHolder } from "../../utils/community";
+import { COMMUNITY as COMMUNITY_ID } from "arverify";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -45,7 +45,7 @@ const Verify = () => {
       }
     })();
   }, []);
-  const {setVisible, bindings} = useModal();
+  const { setVisible, bindings } = useModal();
   const {
     setVisible: setConfirmationVisible,
     bindings: confirmationBindings,
@@ -55,7 +55,7 @@ const Verify = () => {
   const [fee, setFee] = useState(0);
   useEffect(() => {
     (async () => {
-      const gql = await all(verificationsQuery, {addr: target});
+      const gql = await all(verificationsQuery, { addr: target });
       setCount(gql.length);
 
       const raw = await fetch(
@@ -71,7 +71,7 @@ const Verify = () => {
   useEffect(() => {
     if (addr && target) {
       (async () => {
-        const gql = (await run(verificationQuery, {addr, target})).data
+        const gql = (await run(verificationQuery, { addr, target })).data
           .transactions.edges;
         if (gql.length === 1) {
           setVerified(true);
@@ -96,7 +96,7 @@ const Verify = () => {
               setAddr("");
             }
           }}
-          style={{cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
         >
           {addr === "" ? "Log In" : addr}
         </Text>
@@ -122,7 +122,7 @@ const Verify = () => {
           If so, hit the button below to help them raise their trust score on
           the decentralised web!
         </Text>
-        <Divider/>
+        <Divider />
         <Text h4>{count} verification(s)</Text>
         {addr === "" ? (
           <>
@@ -145,13 +145,13 @@ const Verify = () => {
         <Text>
           Fee: <Code>{fee} AR</Code>{" "}
           <Tooltip text="By taking a fee, we disincentivize the creation of fake address networks.">
-            <InfoIcon/>
+            <InfoIcon />
           </Tooltip>
         </Text>
       </div>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{textTransform: "none"}}>
+        <Modal.Subtitle style={{ textTransform: "none" }}>
           Use your{" "}
           <a
             href="https://www.arweave.org/wallet"
@@ -164,10 +164,10 @@ const Verify = () => {
         </Modal.Subtitle>
         <Modal.Content>
           <Card
-            style={{border: "1px dashed #333", cursor: "pointer"}}
+            style={{ border: "1px dashed #333", cursor: "pointer" }}
             onClick={() => document.getElementById("file").click()}
           >
-            <FileIcon size={24}/> Sign in with your keyfile
+            <FileIcon size={24} /> Sign in with your keyfile
           </Card>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
@@ -186,56 +186,59 @@ const Verify = () => {
         <Modal.Action passive onClick={() => setConfirmationVisible(false)}>
           Cancel
         </Modal.Action>
-        <Modal.Action type={"success"}  loading={loading} onClick={async () => {
-          setLoading(true);
+        <Modal.Action
+          type={"success"}
+          loading={loading}
+          onClick={async () => {
+            setLoading(true);
 
-          const jwk = JSON.parse(localStorage.getItem("keyfile"));
+            const jwk = JSON.parse(localStorage.getItem("keyfile"));
 
-          const tip = await client.createTransaction(
-            {
-              target: await selectTokenHolder(),
-              quantity: client.ar.arToWinston(fee.toString()),
-            },
-            jwk
-          );
-          tip.addTag("Application", "ArVerify");
-          tip.addTag("Action", "FEE_Verification");
-          tip.addTag("Address", target);
-          await client.transactions.sign(tip, jwk);
-          await client.transactions.post(tip);
+            const tip = await client.createTransaction(
+              {
+                target: await selectTokenHolder(),
+                quantity: client.ar.arToWinston(fee.toString()),
+              },
+              jwk
+            );
+            tip.addTag("Application", "ArVerify");
+            tip.addTag("Action", "FEE_Verification");
+            tip.addTag("Address", target);
+            await client.transactions.sign(tip, jwk);
+            await client.transactions.post(tip);
 
-          const tx = await client.createTransaction(
-            {
-              target,
-              data: Math.random().toString().slice(-4),
-            },
-            jwk
-          );
-          tx.addTag("Application", "ArVerify");
-          tx.addTag("Action", "Verification");
-          tx.addTag("Method", "Link");
-          tx.addTag("Address", target);
+            const tx = await client.createTransaction(
+              {
+                target,
+                data: Math.random().toString().slice(-4),
+              },
+              jwk
+            );
+            tx.addTag("Application", "ArVerify");
+            tx.addTag("Action", "Verification");
+            tx.addTag("Method", "Link");
+            tx.addTag("Address", target);
 
-          // community xyz activity tags
-          tx.addTag("Service", "ArVerify");
-          tx.addTag("Community-ID", COMMUNITY_ID);
-          tx.addTag(
-            "Message",
-            `${target} was verified through their sharable link`
-          );
-          tx.addTag("Type", "ArweaveActivity");
+            // community xyz activity tags
+            tx.addTag("Service", "ArVerify");
+            tx.addTag("Community-ID", COMMUNITY_ID);
+            tx.addTag(
+              "Message",
+              `${target} was verified through their sharable link`
+            );
+            tx.addTag("Type", "ArweaveActivity");
 
-          await client.transactions.sign(tx, jwk);
-          await client.transactions.post(tx);
+            await client.transactions.sign(tx, jwk);
+            await client.transactions.post(tx);
 
-          setLoading(false);
-          setVerified(true);
+            setLoading(false);
+            setVerified(true);
 
-          router.reload();
+            router.reload();
 
-          setVisible(false)
-        }
-        }>
+            setVisible(false);
+          }}
+        >
           Confirm
         </Modal.Action>
       </Modal>
