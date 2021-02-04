@@ -23,13 +23,10 @@ import {
   Code,
   Link,
 } from "@geist-ui/react";
-import {
-  FileIcon,
-  ClippyIcon,
-  ClockIcon,
-  ShareAndroidIcon,
-} from "@primer/octicons-react";
+import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
+import { Twitter } from "react-feather";
 import { URLSearchParams } from "url";
+import { useRouter } from "next/router";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -114,6 +111,8 @@ const Home = () => {
 
   const [, setToast] = useToasts();
   const { copy } = useClipboard();
+
+  const router = useRouter();
 
   return (
     <Page>
@@ -260,21 +259,6 @@ const Home = () => {
                             >
                               <ClippyIcon /> Copy verification link.
                             </Text>
-                            <Text>
-                              <ShareAndroidIcon />
-                              <Link
-                                target="_blank"
-                                className="twitter-share-button"
-                                href={
-                                  "https://twitter.com/intent/tweet?text=" +
-                                  encodeURIComponent(
-                                    `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
-                                  )
-                                }
-                              >
-                                Tweet verification link.
-                              </Link>
-                            </Text>
                             <Spacer y={0.5} />
                             <Tooltip
                               text={`Last updated at: ${timestamp}`}
@@ -285,6 +269,23 @@ const Home = () => {
                           </Text>
                         </Card.Footer>
                       </Card>
+                    </Row>
+                    <Row justify={"space-around"} style={{ marginTop: "1em" }}>
+                      <Button
+                        type="success"
+                        icon={<Twitter />}
+                        style={{ width: "80%" }}
+                        onClick={() =>
+                          router.push(
+                            "https://twitter.com/intent/tweet?text=" +
+                              encodeURIComponent(
+                                `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
+                              )
+                          )
+                        }
+                      >
+                        Tweet verification link
+                      </Button>
                     </Row>
                   </Col>
                 </Row>
