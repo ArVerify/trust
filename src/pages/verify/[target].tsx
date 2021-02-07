@@ -235,7 +235,7 @@ const Verify = () => {
             tx.addTag("Community-ID", COMMUNITY_ID);
             tx.addTag(
               "Message",
-              `${target} was verified through their sharable link`
+              `Verified ${target} through their sharable link`
             );
             tx.addTag("Type", "ArweaveActivity");
 
