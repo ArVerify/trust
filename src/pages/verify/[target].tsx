@@ -12,7 +12,7 @@ import {
   Card,
   Code,
   Divider,
-  Tooltip,
+  Tooltip, Spacer,
 } from "@geist-ui/react";
 import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
@@ -156,6 +156,13 @@ const Verify = () => {
         <Text>
           Fee: <Code>{fee} AR</Code>{" "}
           <Tooltip text="By taking a fee, we disincentivize the creation of fake address networks.">
+            <InfoIcon />
+          </Tooltip>
+        </Text>
+        <Spacer y={-1.5}/>
+        <Text>
+          Reward: <Code>ARVERIFY profit sharing tokens.</Code>{" "}
+          <Tooltip text="Each day we distribute part of the ownership of the ArVerify protocol to its users, proportionately to the number of people they verify. This ownership entitles you to future profits from the platform, as well as a say in governance decisions.">
             <InfoIcon />
           </Tooltip>
         </Text>
