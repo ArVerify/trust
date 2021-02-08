@@ -12,7 +12,8 @@ import {
   Card,
   Code,
   Divider,
-  Tooltip, Spacer,
+  Tooltip,
+  Spacer,
 } from "@geist-ui/react";
 import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
@@ -87,6 +88,8 @@ const Verify = () => {
     }
   }, [addr, target]);
 
+  const [tweetDisabled, setTweetDisabled] = useState(false);
+
   return (
     <Page>
       <Row justify="space-between" align="middle">
@@ -132,26 +135,56 @@ const Verify = () => {
         <Divider />
         <Text h4>{count} verification(s)</Text>
         {addr === "" ? (
-          <>
-            <Button type="secondary" onClick={() => setVisible(true)}>
-              Sign in with your key file
-            </Button>
-          </>
-        ) : (
-          <Button
-            type="secondary"
-            loading={loading || fee === 0}
-            disabled={verified || addr === target || balance <= fee}
-            onClick={async () => {
-              setConfirmationVisible(true);
-            }}
-          >
-            {verified
-              ? "Verified"
-              : balance <= fee
-              ? "Insufficient funds"
-              : "Verify now"}
+          <Button type="secondary" onClick={() => setVisible(true)}>
+            Sign in with your key file
           </Button>
+        ) : (
+          <>
+            <Button
+              type="secondary"
+              loading={loading || fee === 0}
+              disabled={verified || addr === target || balance <= fee}
+              onClick={async () => {
+                setConfirmationVisible(true);
+              }}
+            >
+              {verified
+                ? "Verified"
+                : balance <= fee
+                ? "Insufficient funds"
+                : "Verify now"}
+            </Button>
+            {verified && (
+              <>
+                <Spacer y={0.5} />
+                <Button
+                  type="success"
+                  disabled={tweetDisabled}
+                  onClick={async () => {
+                    const raw = await fetch(
+                      `https://api.arverify.org/tweet/${target}`
+                    );
+                    const res = await raw.json();
+
+                    if (res.meta.result_count === 0) {
+                      setTweetDisabled(true);
+                    } else {
+                      const tweet = res.meta.oldest_id;
+                      router.push(
+                        "https://twitter.com/intent/tweet?text=" +
+                          encodeURIComponent(
+                            `Hey!\nJust verified you! Mind verifying me: https://${window.location.host}/verify/${addr} 🙌🏻☑️`
+                          ) +
+                          `&in_reply_to=${tweet}`
+                      );
+                    }
+                  }}
+                >
+                  {tweetDisabled ? "Unable to find tweet" : "Tweet about this"}
+                </Button>
+              </>
+            )}
+          </>
         )}
         <Text>
           Fee: <Code>{fee} AR</Code>{" "}
@@ -159,7 +192,7 @@ const Verify = () => {
             <InfoIcon />
           </Tooltip>
         </Text>
-        <Spacer y={-1.5}/>
+        <Spacer y={-1.5} />
         <Text>
           Reward: <Code>ARVERIFY profit sharing tokens.</Code>{" "}
           <Tooltip text="Each day we distribute part of the ownership of the ArVerify protocol to its users, proportionately to the number of people they verify. This ownership entitles you to future profits from the platform, as well as a say in governance decisions.">
