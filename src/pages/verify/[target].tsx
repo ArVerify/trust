@@ -14,6 +14,7 @@ import {
   Divider,
   Tooltip,
   Spacer,
+  Link,
 } from "@geist-ui/react";
 import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
@@ -230,8 +231,15 @@ const Verify = () => {
         <Modal.Title>Confirm your verification</Modal.Title>
         <Modal.Content>
           <Text>
-            Are you sure? Note that there is a <Code>{fee} AR</Code> fee. This
-            fee will be sent to a randomly selected community member.
+            The fee will be sent to the{" "}
+            <Link
+              color
+              target="_blank"
+              href="https://community.xyz/#f6lW-sKxsc340p8eBBL2i_fnmSI_fRSFmkqvzqyUsRs"
+            >
+              ArVerify community
+            </Link>
+            .
           </Text>
         </Modal.Content>
         <Modal.Action passive onClick={() => setConfirmationVisible(false)}>
