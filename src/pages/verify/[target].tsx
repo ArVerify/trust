@@ -237,7 +237,7 @@ const Verify = () => {
               target="_blank"
               href="https://community.xyz/#f6lW-sKxsc340p8eBBL2i_fnmSI_fRSFmkqvzqyUsRs"
             >
-              ArVerify community
+              ArVerify Community
             </Link>
             .
           </Text>
