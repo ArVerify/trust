@@ -173,7 +173,7 @@ const Verify = () => {
                       router.push(
                         "https://twitter.com/intent/tweet?text=" +
                           encodeURIComponent(
-                            `Hey!\nJust verified you! Mind verifying me: https://${window.location.host}/verify/${addr} 🙌🏻☑️`
+                            `Hey! Just verified you! Mind verifying me?\nhttps://${window.location.host}/verify/${addr} 🙌🏻☑️`
                           ) +
                           `&in_reply_to=${tweet}`
                       );
