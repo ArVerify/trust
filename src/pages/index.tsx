@@ -21,7 +21,7 @@ import {
   useTheme,
   Tooltip,
   Code,
-  Link,
+  Link, Note,
 } from "@geist-ui/react";
 import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
 import { Twitter } from "react-feather";
@@ -334,6 +334,8 @@ const Home = () => {
           >
             <FileIcon size={24} /> Sign in with your keyfile
           </Card>
+          <Spacer y={1}/>
+          <Note>Your keyfile will stay locally.</Note>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
           Cancel
