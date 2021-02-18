@@ -565,10 +565,10 @@ articles@~0.2.1:
   resolved "https://registry.yarnpkg.com/articles/-/articles-0.2.2.tgz#cc6b429f8cfa811f41e7a08505abbb4e45503197"
   integrity sha512-S3Y4MPp+LD/l0HHm/4yrr6MoXhUkKT98ZdsV2tkTuBNywqUXEtvJT+NBO3KTSQEttc5EOwEJe2Xw8cZ9TI5Hrw==
 
-arverify@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/arverify/-/arverify-0.0.5.tgz#249f2c25cb7ca8133c82dfe133c5225932f76476"
-  integrity sha512-N5U0ppf65+omaNBJtZjxr0whnQnu63Hx1xUdhrY8BIWBoPyc/xZg40E4mF6wKz/N2cg0mLR67jC28Awh2QF3yg==
+arverify@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/arverify/-/arverify-0.0.6.tgz#3b6671796896411fea2e9b3b709859bfc92d57a0"
+  integrity sha512-K1IUNpEGukPm3Y5HzfNLUW0TOWv8BQukrgnTyccKf+Hryf5qS1T5gwYNIrQYWomfY2rtfD9sTpGfLqvWqw/04Q==
   dependencies:
     ar-gql "^0.0.1"
     arweave "^1.9.1"
