@@ -10,7 +10,7 @@
     "@geist-ui/react": "^2.1.0-canary.2",
     "@primer/octicons-react": "^11.2.0",
     "ar-gql": "^0.0.3",
-    "arverify": "^0.0.6",
+    "arverify": "^0.0.9",
     "arweave": "^1.10.0",
     "cacheweave": "^2.5.0",
     "moment": "^2.29.1",

@@ -31,7 +31,7 @@ import AuthNodeCard from "../components/authNodeCard";
 import { URLSearchParams } from "url";
 import { useRouter } from "next/router";
 
-import { getFee } from "arverify";
+import {getFee, getVerification, recommendNode, verify} from "arverify";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -58,10 +58,12 @@ const Home = () => {
   } = useModal();
 
   const [loading, setLoading] = useState(false);
+  const [loadingNode, setLoadingNode] = useState(false);
   const [failed, setFailed] = useState(false);
   const [status, setStatus] = useState("warning");
   const [percentage, setPercentage] = useState(0);
   const [score, setScore] = useState(0);
+  const [verified, setVerified] = useState(false);
   const [time, setTime] = useState("");
   const [timestamp, setTimestamp] = useState("");
   const [count, setCount] = useState(0);
@@ -80,6 +82,9 @@ const Home = () => {
 
       setPercentage(parseFloat(res.percentage.toFixed(2)));
       setScore(res.score);
+
+      const verification = await getVerification(addr)
+      setVerified(!verification.txID);
 
       const now = moment();
       const then = moment.utc(res.updated_at);
@@ -299,11 +304,12 @@ const Home = () => {
                     >
                       <Button
                         type="secondary"
+                        disabled={verified}
                         icon={<GoogleIcon />}
                         style={{ width: "80%" }}
                         onClick={() => setNodeModalVisible(true)}
                       >
-                        Verify with Google
+                        {verified? "Already verified": "Verify with Google"}
                       </Button>
                     </Row>
                   </Col>
@@ -395,7 +401,16 @@ const Home = () => {
         <Modal.Action passive onClick={() => setNodeModalVisible(false)}>
           Cancel
         </Modal.Action>
-        <Modal.Action onClick={() => setNodeModalVisible(false)}>
+        <Modal.Action loading={loadingNode} disabled={verified} onClick={async () => {
+          setLoadingNode(true)
+          const keyfile = JSON.parse(localStorage.getItem("keyfile"))
+          if (keyfile) {
+            const url = await verify(keyfile, "https://trust.arverify.org?verification=successful")
+            setLoadingNode(false)
+            await router.push(url)
+          }
+          setNodeModalVisible(false)
+        }}>
           Verify using Google
         </Modal.Action>
       </Modal>
