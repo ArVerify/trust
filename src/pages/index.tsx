@@ -27,8 +27,11 @@ import {
 import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
 import { Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
+import AuthNodeCard from "../components/authNodeCard";
 import { URLSearchParams } from "url";
 import { useRouter } from "next/router";
+
+import { getFee } from "arverify";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -387,9 +390,7 @@ const Home = () => {
           Verify using an AuthNode
         </Modal.Subtitle>
         <Modal.Content>
-          To verify with a Google-Account we use our ArVerify auth node system.
-          For using it, we will send a 5 USD tip in AR to the AuthNode. Click
-          the button below to start the verification process.
+          <AuthNodeCard />
         </Modal.Content>
         <Modal.Action passive onClick={() => setNodeModalVisible(false)}>
           Cancel

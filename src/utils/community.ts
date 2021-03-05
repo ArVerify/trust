@@ -1,13 +1,12 @@
 import Arweave from "arweave";
 import { getContract } from "cacheweave";
+import { COMMUNITY } from "arverify";
 
 const client = new Arweave({
   host: "arweave.net",
   port: 443,
   protocol: "https",
 });
-
-const COMMUNITY = "f6lW-sKxsc340p8eBBL2i_fnmSI_fRSFmkqvzqyUsRs";
 
 const weightedRandom = (dict: Record<string, number>): string | undefined => {
   let sum = 0;
