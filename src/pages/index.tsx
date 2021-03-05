@@ -21,10 +21,12 @@ import {
   useTheme,
   Tooltip,
   Code,
-  Link, Note,
+  Link,
+  Note,
 } from "@geist-ui/react";
 import { FileIcon, ClippyIcon, ClockIcon } from "@primer/octicons-react";
 import { Twitter } from "react-feather";
+import GoogleIcon from "../components/logos/google";
 import { URLSearchParams } from "url";
 import { useRouter } from "next/router";
 
@@ -45,7 +47,12 @@ const Home = () => {
       }
     })();
   }, []);
+
   const { setVisible, bindings } = useModal();
+  const {
+    setVisible: setNodeModalVisible,
+    bindings: nodeModalBindings,
+  } = useModal();
 
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -101,10 +108,6 @@ const Home = () => {
         setLoading(true);
         await fetchData();
         setLoading(false);
-
-        setInterval(async () => {
-          await fetchData();
-        }, 60000);
       })();
     }
   }, [addr, failed]);
@@ -287,6 +290,19 @@ const Home = () => {
                         Tweet verification link
                       </Button>
                     </Row>
+                    <Row
+                      justify={"space-around"}
+                      style={{ marginTop: "0.2em" }}
+                    >
+                      <Button
+                        type="secondary"
+                        icon={<GoogleIcon />}
+                        style={{ width: "80%" }}
+                        onClick={() => setNodeModalVisible(true)}
+                      >
+                        Verify with Google
+                      </Button>
+                    </Row>
                   </Col>
                 </Row>
 
@@ -334,7 +350,7 @@ const Home = () => {
           >
             <FileIcon size={24} /> Sign in with your keyfile
           </Card>
-          <Spacer y={1}/>
+          <Spacer y={1} />
           <Note>Your keyfile will stay locally.</Note>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
@@ -363,6 +379,25 @@ const Home = () => {
           opacity: 0;
         }
       `}</style>
+
+      {/* AuthNodeModal */}
+      <Modal {...nodeModalBindings}>
+        <Modal.Title>Verify with Google</Modal.Title>
+        <Modal.Subtitle style={{ textTransform: "none" }}>
+          Verify using an AuthNode
+        </Modal.Subtitle>
+        <Modal.Content>
+          To verify with a Google-Account we use our ArVerify auth node system.
+          For using it, we will send a 5 USD tip in AR to the AuthNode. Click
+          the button below to start the verification process.
+        </Modal.Content>
+        <Modal.Action passive onClick={() => setNodeModalVisible(false)}>
+          Cancel
+        </Modal.Action>
+        <Modal.Action onClick={() => setNodeModalVisible(false)}>
+          Verify using Google
+        </Modal.Action>
+      </Modal>
     </Page>
   );
 };

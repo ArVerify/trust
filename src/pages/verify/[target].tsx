@@ -14,7 +14,8 @@ import {
   Divider,
   Tooltip,
   Spacer,
-  Link, Note,
+  Link,
+  Note,
 } from "@geist-ui/react";
 import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
@@ -221,7 +222,7 @@ const Verify = () => {
           >
             <FileIcon size={24} /> Sign in with your keyfile
           </Card>
-          <Spacer y={1}/>
+          <Spacer y={1} />
           <Note>Your keyfile will stay locally.</Note>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
