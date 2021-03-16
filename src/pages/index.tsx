@@ -1,37 +1,37 @@
 import Arweave from "arweave";
-import React, {useState, useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
-import {all} from "ar-gql";
+import { all } from "ar-gql";
 import verificationsQuery from "../queries/verifications";
 import addressVerifiedQuery from "../queries/addressVerified";
 import {
-  useModal,
-  useToasts,
-  useClipboard,
-  Page,
-  Row,
+  Badge,
   Breadcrumbs,
-  Text,
   Button,
   Card,
-  Spacer,
-  Modal,
-  Col,
-  Progress,
-  useTheme,
-  Tooltip,
   Code,
+  Col,
   Link,
-  Note, Badge,
+  Modal,
+  Note,
+  Page,
+  Progress,
+  Row,
+  Spacer,
+  Text,
+  Tooltip,
+  useClipboard,
+  useModal,
+  useTheme,
+  useToasts,
 } from "@geist-ui/react";
-import {FileIcon, ClippyIcon, ClockIcon} from "@primer/octicons-react";
-import {Twitter} from "react-feather";
+import { ClippyIcon, ClockIcon, FileIcon } from "@primer/octicons-react";
+import { Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
 import AuthNodeCard from "../components/authNodeCard";
-import {URLSearchParams} from "url";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
-import {getFee, getVerification, recommendNode, verify} from "arverify";
+import { getVerification, verify } from "arverify";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -51,7 +51,7 @@ const Home = () => {
     })();
   }, []);
 
-  const {setVisible, bindings} = useModal();
+  const { setVisible, bindings } = useModal();
   const {
     setVisible: setNodeModalVisible,
     bindings: nodeModalBindings,
@@ -85,8 +85,8 @@ const Home = () => {
       setPercentage(parseFloat(res.percentage.toFixed(2)));
       setScore(res.score);
 
-      const verification = await getVerification(addr)
-      console.log(verification)
+      const verification = await getVerification(addr);
+      console.log(verification);
       setVerified(!!verification.txID);
 
       const now = moment();
@@ -95,10 +95,10 @@ const Home = () => {
       setTime(diff.humanize(true));
       setTimestamp(moment.utc(res.updated_at).local().format("L LTS"));
 
-      const gql = await all(verificationsQuery, {addr});
+      const gql = await all(verificationsQuery, { addr });
       setCount(gql.length);
 
-      const result = await all(addressVerifiedQuery, {addr});
+      const result = await all(addressVerifiedQuery, { addr });
       setAddressHasVerified(
         result.map((r) => {
           return r.node.recipient;
@@ -124,7 +124,7 @@ const Home = () => {
   }, [addr, failed]);
 
   const [, setToast] = useToasts();
-  const {copy} = useClipboard();
+  const { copy } = useClipboard();
 
   const router = useRouter();
 
@@ -150,7 +150,7 @@ const Home = () => {
                 setAddr("");
               }
             }}
-            style={{cursor: "pointer"}}
+            style={{ cursor: "pointer" }}
           >
             {addr === "" ? "Log In" : addr}
           </Text>
@@ -174,7 +174,7 @@ const Home = () => {
               the permaweb.
             </Text>
             <Text h3>Jump in now.</Text>
-            <Spacer y={4}/>
+            <Spacer y={4} />
             <Button type="secondary" onClick={() => setVisible(true)}>
               Sign in with your key file
             </Button>
@@ -205,7 +205,7 @@ const Home = () => {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                       },
-                      body: JSON.stringify({address: addr}),
+                      body: JSON.stringify({ address: addr }),
                     });
                     setFailed(false);
                   }}
@@ -220,7 +220,7 @@ const Home = () => {
                   width: "80%",
                 }}
               >
-                <Spacer y={2}/>
+                <Spacer y={2} />
                 <Row justify={"space-around"}>
                   <Col>
                     <Text h3>Welcome!</Text>
@@ -243,7 +243,7 @@ const Home = () => {
                   <Col>
                     <Row justify={"space-around"}>
                       <Card width="80%">
-                        <Text h2 style={{textAlign: "center"}}>
+                        <Text h2 style={{ textAlign: "center" }}>
                           {`${percentage}%`}
                         </Text>
                         <Progress
@@ -254,7 +254,7 @@ const Home = () => {
                             100: theme.palette.success,
                           }}
                         />
-                        <Spacer y={1}/>
+                        <Spacer y={1} />
                         <Text h4>You have {count} verification(s)</Text>
                         <Card.Footer>
                           <Text>
@@ -269,32 +269,32 @@ const Home = () => {
                                   type: "secondary",
                                 });
                               }}
-                              style={{cursor: "pointer"}}
+                              style={{ cursor: "pointer" }}
                             >
-                              <ClippyIcon/> Copy verification link.
+                              <ClippyIcon /> Copy verification link.
                             </Text>
-                            <Spacer y={0.5}/>
+                            <Spacer y={0.5} />
                             <Tooltip
                               text={`Last updated at: ${timestamp}`}
                               placement="bottom"
                             >
-                              <ClockIcon/> {time}
+                              <ClockIcon /> {time}
                             </Tooltip>
                           </Text>
                         </Card.Footer>
                       </Card>
                     </Row>
-                    <Row justify={"space-around"} style={{marginTop: "1em"}}>
+                    <Row justify={"space-around"} style={{ marginTop: "1em" }}>
                       <Button
                         type="success"
-                        icon={<Twitter/>}
-                        style={{width: "80%"}}
+                        icon={<Twitter />}
+                        style={{ width: "80%" }}
                         onClick={() =>
                           router.push(
                             "https://twitter.com/intent/tweet?text=" +
-                            encodeURIComponent(
-                              `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
-                            )
+                              encodeURIComponent(
+                                `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
+                              )
                           )
                         }
                       >
@@ -303,26 +303,28 @@ const Home = () => {
                     </Row>
                     <Row
                       justify={"space-around"}
-                      style={{marginTop: "0.8em"}}
+                      style={{ marginTop: "0.8em" }}
                     >
                       <Badge.Anchor>
-                        <Badge size="mini" type="warning">ALPHA</Badge>
+                        <Badge size="mini" type="warning">
+                          ALPHA
+                        </Badge>
                         <Button
-                        type="secondary"
-                        disabled={verified || loading}
-                        loading={loading}
-                        icon={<GoogleIcon/>}
-                        style={{width: "80%"}}
-                        onClick={() => setNodeModalVisible(true)}
-                      >
-                        {verified ? "Already verified" : "Verify with Google"}
-                      </Button>
+                          type="secondary"
+                          disabled={verified || loading}
+                          loading={loading}
+                          icon={<GoogleIcon />}
+                          style={{ width: "80%" }}
+                          onClick={() => setNodeModalVisible(true)}
+                        >
+                          {verified ? "Already verified" : "Verify with Google"}
+                        </Button>
                       </Badge.Anchor>
                     </Row>
                   </Col>
                 </Row>
 
-                <Spacer y={2}/>
+                <Spacer y={2} />
                 <Row>
                   <Col>
                     <Text h4>You have verified:</Text>
@@ -334,7 +336,7 @@ const Home = () => {
                         return (
                           <>
                             <Code>{address}</Code>
-                            <Spacer y={0}/>
+                            <Spacer y={0} />
                           </>
                         );
                       })}
@@ -348,7 +350,7 @@ const Home = () => {
       </>
       <Modal {...bindings}>
         <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{textTransform: "none"}}>
+        <Modal.Subtitle style={{ textTransform: "none" }}>
           Use your{" "}
           <a
             href="https://www.arweave.org/wallet"
@@ -361,12 +363,12 @@ const Home = () => {
         </Modal.Subtitle>
         <Modal.Content>
           <Card
-            style={{border: "1px dashed #333", cursor: "pointer"}}
+            style={{ border: "1px dashed #333", cursor: "pointer" }}
             onClick={() => document.getElementById("file").click()}
           >
-            <FileIcon size={24}/> Sign in with your keyfile
+            <FileIcon size={24} /> Sign in with your keyfile
           </Card>
-          <Spacer y={1}/>
+          <Spacer y={1} />
           <Note>Your keyfile will stay locally.</Note>
         </Modal.Content>
         <Modal.Action passive onClick={() => setVisible(false)}>
@@ -399,25 +401,32 @@ const Home = () => {
       {/* AuthNodeModal */}
       <Modal {...nodeModalBindings}>
         <Modal.Title>Verify with Google</Modal.Title>
-        <Modal.Subtitle style={{textTransform: "none"}}>
+        <Modal.Subtitle style={{ textTransform: "none" }}>
           Verify using an AuthNode
         </Modal.Subtitle>
         <Modal.Content>
-          <AuthNodeCard/>
+          <AuthNodeCard />
         </Modal.Content>
         <Modal.Action passive onClick={() => setNodeModalVisible(false)}>
           Cancel
         </Modal.Action>
-        <Modal.Action loading={loadingNode} disabled={verified} onClick={async () => {
-          setLoadingNode(true)
-          const keyfile = JSON.parse(localStorage.getItem("keyfile"))
-          if (keyfile) {
-            const url = await verify(keyfile, "https://trust.arverify.org?verification=successful")
-            setLoadingNode(false)
-            await router.push(url)
-          }
-          setNodeModalVisible(false)
-        }}>
+        <Modal.Action
+          loading={loadingNode}
+          disabled={verified}
+          onClick={async () => {
+            setLoadingNode(true);
+            const keyfile = JSON.parse(localStorage.getItem("keyfile"));
+            if (keyfile) {
+              const url = await verify(
+                keyfile,
+                "https://trust.arverify.org?verification=successful"
+              );
+              setLoadingNode(false);
+              await router.push(url);
+            }
+            setNodeModalVisible(false);
+          }}
+        >
           Verify using Google
         </Modal.Action>
       </Modal>
