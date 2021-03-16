@@ -311,7 +311,7 @@ const Home = () => {
                         </Badge>
                         <Button
                           type="secondary"
-                          disabled={verified || loading}
+                          disabled={true}
                           loading={loading}
                           icon={<GoogleIcon />}
                           style={{ width: "80%" }}
