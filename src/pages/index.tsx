@@ -31,7 +31,7 @@ import {
   FileIcon,
   KeyIcon,
 } from "@primer/octicons-react";
-import { Twitter } from "react-feather";
+import { Tool, Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
 import AuthNodeCard from "../components/authNodeCard";
 import { useRouter } from "next/router";
@@ -141,7 +141,11 @@ const Home = () => {
           <img src="/logo-text.svg" alt="ArVerify" />
         </a>
         <Tooltip
-          text={`Click here to ${addr === "" ? "login" : "logout"}`}
+          text={
+            <p style={{ margin: 0, textAlign: "center" }}>
+              Click here to {addr === "" ? "login" : "logout"}
+            </p>
+          }
           placement="bottom"
         >
           <Text
@@ -155,7 +159,7 @@ const Home = () => {
             }}
             style={{ cursor: "pointer" }}
           >
-            {addr === "" ? "Log In" : addr}
+            {addr === "" ? "Log In" : "Logout"}
           </Text>
         </Tooltip>
       </Row>
@@ -239,9 +243,20 @@ const Home = () => {
                 }}
               >
                 <Spacer y={2} />
+                <Tooltip text="Click to copy" placement="bottom">
+                  <h1
+                    className={styles.address}
+                    onClick={() => {
+                      copy(addr);
+                      setToast({ text: "Address copied to clipboard" });
+                    }}
+                  >
+                    {addr}
+                  </h1>
+                </Tooltip>
+                <Spacer y={2} />
                 <Row justify={"space-around"}>
                   <Col>
-                    <Text h3>Welcome!</Text>
                     <Text h4>Your current trust-score is {percentage}%</Text>
                     <Text>
                       Many applications on the{" "}
@@ -252,10 +267,6 @@ const Home = () => {
                       posts are shown. By obtaining a healthy verification
                       score, you can ensure that you are trusted by applications
                       on the permaweb.{" "}
-                    </Text>
-                    <Text>
-                      To increase your score simply ask a friend to verify you,
-                      or purchase a third-party verification.
                     </Text>
                   </Col>
                   <Col>
@@ -274,71 +285,76 @@ const Home = () => {
                         />
                         <Spacer y={1} />
                         <Text h4>You have {count} verification(s)</Text>
-                        <Card.Footer>
-                          <Text>
-                            <Text
-                              onClick={() => {
-                                copy(
-                                  `https://${window.location.host}/verify/${addr}`
-                                );
-                                setToast({
-                                  text:
-                                    "Verification link copied to clipboard.",
-                                  type: "secondary",
-                                });
-                              }}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <ClippyIcon /> Copy verification link.
-                            </Text>
-                            <Spacer y={0.5} />
-                            <Tooltip
-                              text={`Last updated at: ${timestamp}`}
-                              placement="bottom"
-                            >
-                              <ClockIcon /> {time}
-                            </Tooltip>
+                        <Tooltip
+                          text={`Last updated at: ${timestamp}`}
+                          placement="bottom"
+                        >
+                          <Text className={styles.updatedAt}>
+                            <ClockIcon /> Updated {time}
                           </Text>
-                        </Card.Footer>
+                        </Tooltip>
                       </Card>
                     </Row>
-                    <Row justify={"space-around"} style={{ marginTop: "1em" }}>
-                      <Button
-                        type="success"
-                        icon={<Twitter />}
-                        style={{ width: "80%" }}
-                        onClick={() =>
-                          router.push(
-                            "https://twitter.com/intent/tweet?text=" +
-                              encodeURIComponent(
-                                `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
-                              )
-                          )
-                        }
+                  </Col>
+                </Row>
+
+                <Spacer y={2} />
+
+                <Row>
+                  <Col>
+                    <Text h4>Boost your score</Text>
+                    <Text>
+                      To increase your score, simply ask a firend to verify you
+                      by sending them this link:
+                      <a
+                        href={`https://${window.location.host}/verify/${addr}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: "block" }}
                       >
-                        Tweet verification link
-                      </Button>
-                    </Row>
-                    <Row
-                      justify={"space-around"}
-                      style={{ marginTop: "0.8em" }}
+                        https://{window.location.host}/verify/{addr}
+                      </a>
+                      <Text
+                        className={styles.CopyLink}
+                        onClick={() => {
+                          copy(
+                            `https://${window.location.host}/verify/${addr}`
+                          );
+                          setToast({ text: "Copied verification link" });
+                        }}
+                      >
+                        <ClippyIcon />
+                        Copy verification link
+                      </Text>
+                    </Text>
+                    <Button
+                      type="success-light"
+                      onClick={() =>
+                        router.push(
+                          "https://twitter.com/intent/tweet?text=" +
+                            encodeURIComponent(
+                              `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
+                            )
+                        )
+                      }
+                      className="arverify-button"
                     >
-                      <Badge.Anchor>
-                        <Badge size="mini" type="warning">
-                          ALPHA
-                        </Badge>
-                        <Button
-                          type="secondary"
-                          disabled={true}
-                          loading={loading}
-                          icon={<GoogleIcon />}
-                          style={{ width: "80%" }}
-                          onClick={() => setNodeModalVisible(true)}
-                        >
-                          {verified ? "Already verified" : "Verify with Google"}
-                        </Button>
-                      </Badge.Anchor>
-                    </Row>
+                      <Twitter />
+                      Tweet verification link
+                    </Button>
+                    <Spacer y={1.6} />
+                    <Text>
+                      You can also purchase third-party verification from
+                      Google:
+                    </Text>
+                    <Button
+                      type="success-light"
+                      onClick={() => setNodeModalVisible(true)}
+                      className="arverify-button"
+                    >
+                      <GoogleIcon />
+                      {verified ? "Already verified" : "Verify with Google"}
+                    </Button>
                   </Col>
                 </Row>
 
@@ -346,7 +362,7 @@ const Home = () => {
                 <Row>
                   <Col>
                     <Text h4>You have verified:</Text>
-                    <Text>
+                    <Text className={styles.VerifiedAddresses}>
                       {addressHasVerified.length === 0 && (
                         <Text>You have not verified anyone.</Text>
                       )}
