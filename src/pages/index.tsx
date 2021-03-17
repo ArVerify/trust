@@ -25,13 +25,19 @@ import {
   useTheme,
   useToasts,
 } from "@geist-ui/react";
-import { ClippyIcon, ClockIcon, FileIcon } from "@primer/octicons-react";
+import {
+  ClippyIcon,
+  ClockIcon,
+  FileIcon,
+  KeyIcon,
+} from "@primer/octicons-react";
 import { Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
 import AuthNodeCard from "../components/authNodeCard";
 import { useRouter } from "next/router";
 
 import { getVerification, verify } from "arverify";
+import styles from "../styles/home.module.sass";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -131,12 +137,9 @@ const Home = () => {
   return (
     <Page>
       <Row justify="space-between" align="middle">
-        <Breadcrumbs size="large">
-          <Breadcrumbs.Item href="https://arverify.org">
-            ArVerify
-          </Breadcrumbs.Item>
-          <Breadcrumbs.Item>Trust</Breadcrumbs.Item>
-        </Breadcrumbs>
+        <a href="https://arverify.org" className={styles.logo}>
+          <img src="/logo-text.svg" alt="ArVerify" />
+        </a>
         <Tooltip
           text={`Click here to ${addr === "" ? "login" : "logout"}`}
           placement="bottom"
@@ -167,7 +170,17 @@ const Home = () => {
             }}
           >
             <Text h3>
-              The next web will be defined by <Code>trust</Code>.
+              The next web will be defined by{" "}
+              <b
+                style={{
+                  color: theme.palette.success,
+                  fontWeight: 800,
+                  fontSize: "1.2em",
+                }}
+              >
+                trust
+              </b>
+              .
             </Text>
             <Text h3>
               ArVerify is your portal to verification on every app, anywhere on
@@ -175,7 +188,12 @@ const Home = () => {
             </Text>
             <Text h3>Jump in now.</Text>
             <Spacer y={4} />
-            <Button type="secondary" onClick={() => setVisible(true)}>
+            <Button
+              type="success-light"
+              onClick={() => setVisible(true)}
+              className="arverify-button"
+            >
+              <KeyIcon />
               Sign in with your key file
             </Button>
           </div>
