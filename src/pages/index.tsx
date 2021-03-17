@@ -30,6 +30,7 @@ import {
   ClockIcon,
   FileIcon,
   KeyIcon,
+  ShareIcon,
 } from "@primer/octicons-react";
 import { Tool, Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
@@ -257,7 +258,7 @@ const Home = () => {
                 <Spacer y={2} />
                 <Row justify={"space-around"}>
                   <Col>
-                    <Text h4>Your current trust-score is {percentage}%</Text>
+                    <Text h3>Your current trust-score is {percentage}%</Text>
                     <Text>
                       Many applications on the{" "}
                       <Link target="_blank" href="https://arweave.org" color>
@@ -302,7 +303,7 @@ const Home = () => {
 
                 <Row>
                   <Col>
-                    <Text h4>Boost your score</Text>
+                    <Text h3>Boost your score</Text>
                     <Text>
                       To increase your score, simply ask a firend to verify you
                       by sending them this link:
@@ -314,18 +315,35 @@ const Home = () => {
                       >
                         https://{window.location.host}/verify/{addr}
                       </a>
-                      <Text
-                        className={styles.CopyLink}
-                        onClick={() => {
-                          copy(
-                            `https://${window.location.host}/verify/${addr}`
-                          );
-                          setToast({ text: "Copied verification link" });
-                        }}
-                      >
-                        <ClippyIcon />
-                        Copy verification link
-                      </Text>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Text
+                          className={styles.CopyLink}
+                          onClick={() => {
+                            copy(
+                              `https://${window.location.host}/verify/${addr}`
+                            );
+                            setToast({ text: "Copied verification link" });
+                          }}
+                        >
+                          <ClippyIcon />
+                          Copy verification link
+                        </Text>
+                        {navigator.share && (
+                          <Text
+                            className={styles.CopyLink}
+                            style={{ marginLeft: "1em" }}
+                            onClick={() =>
+                              navigator.share({
+                                title: `Verify ${addr} on ArVerify`,
+                                url: `https://${window.location.host}/verify/${addr}`,
+                              })
+                            }
+                          >
+                            <ShareIcon />
+                            Share link
+                          </Text>
+                        )}
+                      </div>
                     </Text>
                     <Button
                       type="success-light"
@@ -361,7 +379,7 @@ const Home = () => {
                 <Spacer y={2} />
                 <Row>
                   <Col>
-                    <Text h4>You have verified:</Text>
+                    <Text h3>You have verified:</Text>
                     <Text className={styles.VerifiedAddresses}>
                       {addressHasVerified.length === 0 && (
                         <Text>You have not verified anyone.</Text>
