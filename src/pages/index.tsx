@@ -6,7 +6,6 @@ import verificationsQuery from "../queries/verifications";
 import addressVerifiedQuery from "../queries/addressVerified";
 import {
   Badge,
-  Breadcrumbs,
   Button,
   Card,
   Code,
@@ -33,7 +32,7 @@ import {
   KeyIcon,
   ShareIcon,
 } from "@primer/octicons-react";
-import { Tool, Twitter } from "react-feather";
+import { Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
 import AuthNodeCard from "../components/authNodeCard";
 import { useRouter } from "next/router";

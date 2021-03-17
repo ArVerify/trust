@@ -5,7 +5,6 @@ import {
   useModal,
   Page,
   Row,
-  Breadcrumbs,
   Text,
   Button,
   Modal,
@@ -23,6 +22,7 @@ import verificationQuery from "../../queries/verification";
 import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
 import { COMMUNITY as COMMUNITY_ID } from "arverify";
+import NextLink from "next/link";
 import homeStyles from "../../styles/home.module.sass";
 
 const client = new Arweave({
@@ -101,9 +101,11 @@ const Verify = () => {
   return (
     <Page>
       <Row justify="space-between" align="middle">
-        <a href="https://arverify.org" className={homeStyles.logo}>
-          <img src="/logo-text.svg" alt="ArVerify" />
-        </a>
+        <NextLink href="/">
+          <a className={homeStyles.logo}>
+            <img src="/logo-text.svg" alt="ArVerify" />
+          </a>
+        </NextLink>
         <Tooltip
           text={
             <p style={{ margin: 0, textAlign: "center" }}>
