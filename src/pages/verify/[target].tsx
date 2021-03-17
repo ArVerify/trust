@@ -5,7 +5,6 @@ import {
   useModal,
   Page,
   Row,
-  Breadcrumbs,
   Text,
   Button,
   Modal,
@@ -23,6 +22,8 @@ import verificationQuery from "../../queries/verification";
 import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
 import { COMMUNITY as COMMUNITY_ID } from "arverify";
+import NextLink from "next/link";
+import homeStyles from "../../styles/home.module.sass";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -33,6 +34,7 @@ const client = new Arweave({
 const Verify = () => {
   const router = useRouter();
   const [target, setTarget] = useState("");
+
   useEffect(() => {
     if (router.query.target) {
       setTarget(router.query.target.toString());
@@ -40,6 +42,7 @@ const Verify = () => {
   }, [router.query.target]);
 
   const [addr, setAddr] = useState("");
+
   useEffect(() => {
     (async () => {
       const keyfile = localStorage.getItem("keyfile");
@@ -48,6 +51,7 @@ const Verify = () => {
       }
     })();
   }, []);
+
   const { setVisible, bindings } = useModal();
   const {
     setVisible: setConfirmationVisible,
@@ -56,6 +60,7 @@ const Verify = () => {
 
   const [count, setCount] = useState(0);
   const [fee, setFee] = useState(0);
+
   useEffect(() => {
     (async () => {
       const gql = await all(verificationsQuery, { addr: target });
@@ -72,6 +77,7 @@ const Verify = () => {
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
   const [balance, setBalance] = useState(0);
+
   useEffect(() => {
     if (addr && target) {
       (async () => {
@@ -95,23 +101,33 @@ const Verify = () => {
   return (
     <Page>
       <Row justify="space-between" align="middle">
-        <Breadcrumbs size="large">
-          <Breadcrumbs.Item href="/">ArVerify</Breadcrumbs.Item>
-          <Breadcrumbs.Item>Verify</Breadcrumbs.Item>
-        </Breadcrumbs>
-        <Text
-          onClick={() => {
-            if (addr === "") {
-              setVisible(true);
-            } else {
-              localStorage.removeItem("keyfile");
-              setAddr("");
-            }
-          }}
-          style={{ cursor: "pointer" }}
+        <NextLink href="/">
+          <a className={homeStyles.logo}>
+            <img src="/logo-text.svg" alt="ArVerify" />
+          </a>
+        </NextLink>
+        <Tooltip
+          text={
+            <p style={{ margin: 0, textAlign: "center" }}>
+              Click here to {addr === "" ? "login" : "logout"}
+            </p>
+          }
+          placement="bottom"
         >
-          {addr === "" ? "Log In" : addr}
-        </Text>
+          <Text
+            onClick={() => {
+              if (addr === "") {
+                setVisible(true);
+              } else {
+                localStorage.removeItem("keyfile");
+                setAddr("");
+              }
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            {addr === "" ? "Log In" : "Logout"}
+          </Text>
+        </Tooltip>
       </Row>
       <div
         style={{
@@ -137,18 +153,23 @@ const Verify = () => {
         <Divider />
         <Text h4>{count} verification(s)</Text>
         {addr === "" ? (
-          <Button type="secondary" onClick={() => setVisible(true)}>
+          <Button
+            type="success-light"
+            onClick={() => setVisible(true)}
+            className="arverify-button"
+          >
             Sign in with your key file
           </Button>
         ) : (
           <>
             <Button
-              type="secondary"
+              type="success-light"
               loading={loading || fee === 0}
               disabled={verified || addr === target || balance <= fee}
               onClick={async () => {
                 setConfirmationVisible(true);
               }}
+              className="arverify-button"
             >
               {verified
                 ? "Verified"
@@ -160,7 +181,8 @@ const Verify = () => {
               <>
                 <Spacer y={0.5} />
                 <Button
-                  type="success"
+                  type="success-light"
+                  className="arverify-button"
                   disabled={tweetDisabled}
                   onClick={async () => {
                     const raw = await fetch(

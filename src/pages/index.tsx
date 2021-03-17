@@ -6,12 +6,12 @@ import verificationsQuery from "../queries/verifications";
 import addressVerifiedQuery from "../queries/addressVerified";
 import {
   Badge,
-  Breadcrumbs,
   Button,
   Card,
   Code,
   Col,
   Link,
+  Loading,
   Modal,
   Note,
   Page,
@@ -25,13 +25,20 @@ import {
   useTheme,
   useToasts,
 } from "@geist-ui/react";
-import { ClippyIcon, ClockIcon, FileIcon } from "@primer/octicons-react";
+import {
+  ClippyIcon,
+  ClockIcon,
+  FileIcon,
+  KeyIcon,
+  ShareIcon,
+} from "@primer/octicons-react";
 import { Twitter } from "react-feather";
 import GoogleIcon from "../components/logos/google";
 import AuthNodeCard from "../components/authNodeCard";
 import { useRouter } from "next/router";
 
 import { getVerification, verify } from "arverify";
+import styles from "../styles/home.module.sass";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -69,7 +76,7 @@ const Home = () => {
   const [time, setTime] = useState("");
   const [timestamp, setTimestamp] = useState("");
   const [count, setCount] = useState(0);
-  const [addressHasVerified, setAddressHasVerified] = useState([]);
+  const [addressHasVerified, setAddressHasVerified] = useState<string[]>();
 
   const fetchData = async () => {
     moment.locale(navigator.language);
@@ -131,14 +138,15 @@ const Home = () => {
   return (
     <Page>
       <Row justify="space-between" align="middle">
-        <Breadcrumbs size="large">
-          <Breadcrumbs.Item href="https://arverify.org">
-            ArVerify
-          </Breadcrumbs.Item>
-          <Breadcrumbs.Item>Trust</Breadcrumbs.Item>
-        </Breadcrumbs>
+        <a href="https://arverify.org" className={styles.logo}>
+          <img src="/logo-text.svg" alt="ArVerify" />
+        </a>
         <Tooltip
-          text={`Click here to ${addr === "" ? "login" : "logout"}`}
+          text={
+            <p style={{ margin: 0, textAlign: "center" }}>
+              Click here to {addr === "" ? "login" : "logout"}
+            </p>
+          }
           placement="bottom"
         >
           <Text
@@ -152,7 +160,7 @@ const Home = () => {
             }}
             style={{ cursor: "pointer" }}
           >
-            {addr === "" ? "Log In" : addr}
+            {addr === "" ? "Log In" : "Logout"}
           </Text>
         </Tooltip>
       </Row>
@@ -167,7 +175,17 @@ const Home = () => {
             }}
           >
             <Text h3>
-              The next web will be defined by <Code>trust</Code>.
+              The next web will be defined by{" "}
+              <b
+                style={{
+                  color: theme.palette.success,
+                  fontWeight: 800,
+                  fontSize: "1.2em",
+                }}
+              >
+                trust
+              </b>
+              .
             </Text>
             <Text h3>
               ArVerify is your portal to verification on every app, anywhere on
@@ -175,7 +193,12 @@ const Home = () => {
             </Text>
             <Text h3>Jump in now.</Text>
             <Spacer y={4} />
-            <Button type="secondary" onClick={() => setVisible(true)}>
+            <Button
+              type="success-light"
+              onClick={() => setVisible(true)}
+              className="arverify-button"
+            >
+              <KeyIcon />
               Sign in with your key file
             </Button>
           </div>
@@ -197,7 +220,7 @@ const Home = () => {
                   24 hours.
                 </Text>
                 <Button
-                  type="secondary"
+                  type="success-light"
                   onClick={async () => {
                     await fetch(`https://api.arverify.org/score`, {
                       method: "POST",
@@ -209,6 +232,7 @@ const Home = () => {
                     });
                     setFailed(false);
                   }}
+                  className="arverify-button"
                 >
                   Submit your address
                 </Button>
@@ -221,10 +245,21 @@ const Home = () => {
                 }}
               >
                 <Spacer y={2} />
+                <Tooltip text="Click to copy" placement="bottom">
+                  <h1
+                    className={styles.address}
+                    onClick={() => {
+                      copy(addr);
+                      setToast({ text: "Address copied to clipboard" });
+                    }}
+                  >
+                    {addr}
+                  </h1>
+                </Tooltip>
+                <Spacer y={2} />
                 <Row justify={"space-around"}>
                   <Col>
-                    <Text h3>Welcome!</Text>
-                    <Text h4>Your current trust-score is {percentage}%</Text>
+                    <Text h3>Your current trust-score is {percentage}%</Text>
                     <Text>
                       Many applications on the{" "}
                       <Link target="_blank" href="https://arweave.org" color>
@@ -234,10 +269,6 @@ const Home = () => {
                       posts are shown. By obtaining a healthy verification
                       score, you can ensure that you are trusted by applications
                       on the permaweb.{" "}
-                    </Text>
-                    <Text>
-                      To increase your score simply ask a friend to verify you,
-                      or purchase a third-party verification.
                     </Text>
                   </Col>
                   <Col>
@@ -256,90 +287,122 @@ const Home = () => {
                         />
                         <Spacer y={1} />
                         <Text h4>You have {count} verification(s)</Text>
-                        <Card.Footer>
-                          <Text>
-                            <Text
-                              onClick={() => {
-                                copy(
-                                  `https://${window.location.host}/verify/${addr}`
-                                );
-                                setToast({
-                                  text:
-                                    "Verification link copied to clipboard.",
-                                  type: "secondary",
-                                });
-                              }}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <ClippyIcon /> Copy verification link.
-                            </Text>
-                            <Spacer y={0.5} />
-                            <Tooltip
-                              text={`Last updated at: ${timestamp}`}
-                              placement="bottom"
-                            >
-                              <ClockIcon /> {time}
-                            </Tooltip>
+                        <Tooltip
+                          text={`Last updated at: ${timestamp}`}
+                          placement="bottom"
+                        >
+                          <Text className={styles.updatedAt}>
+                            <ClockIcon /> Updated {time}
                           </Text>
-                        </Card.Footer>
+                        </Tooltip>
                       </Card>
                     </Row>
-                    <Row justify={"space-around"} style={{ marginTop: "1em" }}>
-                      <Button
-                        type="success"
-                        icon={<Twitter />}
-                        style={{ width: "80%" }}
-                        onClick={() =>
-                          router.push(
-                            "https://twitter.com/intent/tweet?text=" +
-                              encodeURIComponent(
-                                `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
-                              )
-                          )
-                        }
+                  </Col>
+                </Row>
+
+                <Spacer y={2} />
+
+                <Row>
+                  <Col>
+                    <Text h3>Boost your score</Text>
+                    <Text>
+                      To increase your score, simply ask a firend to verify you
+                      by sending them this link:
+                      <a
+                        href={`https://${window.location.host}/verify/${addr}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: "block" }}
                       >
-                        Tweet verification link
-                      </Button>
-                    </Row>
-                    <Row
-                      justify={"space-around"}
-                      style={{ marginTop: "0.8em" }}
-                    >
-                      <Badge.Anchor>
-                        <Badge size="mini" type="warning">
-                          ALPHA
-                        </Badge>
-                        <Button
-                          type="secondary"
-                          disabled={true}
-                          loading={loading}
-                          icon={<GoogleIcon />}
-                          style={{ width: "80%" }}
-                          onClick={() => setNodeModalVisible(true)}
+                        https://{window.location.host}/verify/{addr}
+                      </a>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Text
+                          className={styles.CopyLink}
+                          onClick={() => {
+                            copy(
+                              `https://${window.location.host}/verify/${addr}`
+                            );
+                            setToast({ text: "Copied verification link" });
+                          }}
                         >
-                          {verified ? "Already verified" : "Verify with Google"}
-                        </Button>
-                      </Badge.Anchor>
-                    </Row>
+                          <ClippyIcon />
+                          Copy verification link
+                        </Text>
+                        {navigator.share && (
+                          <Text
+                            className={styles.CopyLink}
+                            style={{ marginLeft: "1em" }}
+                            onClick={() =>
+                              navigator.share({
+                                title: `Verify ${addr} on ArVerify`,
+                                url: `https://${window.location.host}/verify/${addr}`,
+                              })
+                            }
+                          >
+                            <ShareIcon />
+                            Share link
+                          </Text>
+                        )}
+                      </div>
+                    </Text>
+                    <Button
+                      type="success-light"
+                      onClick={() =>
+                        router.push(
+                          "https://twitter.com/intent/tweet?text=" +
+                            encodeURIComponent(
+                              `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
+                            )
+                        )
+                      }
+                      className="arverify-button"
+                    >
+                      <Twitter />
+                      Tweet verification link
+                    </Button>
+                    <Spacer y={1.6} />
+                    <Text>
+                      You can also purchase third-party verification from
+                      Google:
+                    </Text>
+                    <Badge.Anchor>
+                      <Badge
+                        type="success"
+                        style={{
+                          border: `1px solid ${theme.palette.successLight}`,
+                        }}
+                      >
+                        BETA
+                      </Badge>
+                      <Button
+                        type="success-light"
+                        onClick={() => setNodeModalVisible(true)}
+                        className="arverify-button"
+                        disabled={true} // TODO
+                      >
+                        <GoogleIcon />
+                        {verified ? "Already verified" : "Verify with Google"}
+                      </Button>
+                    </Badge.Anchor>
                   </Col>
                 </Row>
 
                 <Spacer y={2} />
                 <Row>
                   <Col>
-                    <Text h4>You have verified:</Text>
-                    <Text>
-                      {addressHasVerified.length === 0 && (
-                        <Text>You have not verified anyone.</Text>
-                      )}
-                      {addressHasVerified.map((address) => {
-                        return (
-                          <>
-                            <Code>{address}</Code>
-                            <Spacer y={0} />
-                          </>
-                        );
-                      })}
+                    <Text h3>You have verified:</Text>
+                    <Text className={styles.VerifiedAddresses}>
+                      {(addressHasVerified &&
+                        ((addressHasVerified.length === 0 && (
+                          <Text>You have not verified anyone.</Text>
+                        )) ||
+                          addressHasVerified.map((address) => (
+                            <>
+                              <Code>{address}</Code>
+                              <Spacer y={0} />
+                            </>
+                          )))) || <Loading />}
                     </Text>
                   </Col>
                 </Row>
