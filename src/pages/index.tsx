@@ -220,7 +220,7 @@ const Home = () => {
                   24 hours.
                 </Text>
                 <Button
-                  type="secondary"
+                  type="success-light"
                   onClick={async () => {
                     await fetch(`https://api.arverify.org/score`, {
                       method: "POST",
@@ -232,6 +232,7 @@ const Home = () => {
                     });
                     setFailed(false);
                   }}
+                  className="arverify-button"
                 >
                   Submit your address
                 </Button>
