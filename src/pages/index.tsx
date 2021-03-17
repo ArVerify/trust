@@ -366,14 +366,25 @@ const Home = () => {
                       You can also purchase third-party verification from
                       Google:
                     </Text>
-                    <Button
-                      type="success-light"
-                      onClick={() => setNodeModalVisible(true)}
-                      className="arverify-button"
-                    >
-                      <GoogleIcon />
-                      {verified ? "Already verified" : "Verify with Google"}
-                    </Button>
+                    <Badge.Anchor>
+                      <Badge
+                        type="success"
+                        style={{
+                          border: `1px solid ${theme.palette.successLight}`,
+                        }}
+                      >
+                        BETA
+                      </Badge>
+                      <Button
+                        type="success-light"
+                        onClick={() => setNodeModalVisible(true)}
+                        className="arverify-button"
+                        disabled={true} // TODO
+                      >
+                        <GoogleIcon />
+                        {verified ? "Already verified" : "Verify with Google"}
+                      </Button>
+                    </Badge.Anchor>
                   </Col>
                 </Row>
 
