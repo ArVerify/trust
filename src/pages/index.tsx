@@ -12,6 +12,7 @@ import {
   Code,
   Col,
   Link,
+  Loading,
   Modal,
   Note,
   Page,
@@ -76,7 +77,7 @@ const Home = () => {
   const [time, setTime] = useState("");
   const [timestamp, setTimestamp] = useState("");
   const [count, setCount] = useState(0);
-  const [addressHasVerified, setAddressHasVerified] = useState([]);
+  const [addressHasVerified, setAddressHasVerified] = useState<string[]>();
 
   const fetchData = async () => {
     moment.locale(navigator.language);
@@ -382,17 +383,16 @@ const Home = () => {
                   <Col>
                     <Text h3>You have verified:</Text>
                     <Text className={styles.VerifiedAddresses}>
-                      {addressHasVerified.length === 0 && (
-                        <Text>You have not verified anyone.</Text>
-                      )}
-                      {addressHasVerified.map((address) => {
-                        return (
-                          <>
-                            <Code>{address}</Code>
-                            <Spacer y={0} />
-                          </>
-                        );
-                      })}
+                      {(addressHasVerified &&
+                        ((addressHasVerified.length === 0 && (
+                          <Text>You have not verified anyone.</Text>
+                        )) ||
+                          addressHasVerified.map((address) => (
+                            <>
+                              <Code>{address}</Code>
+                              <Spacer y={0} />
+                            </>
+                          )))) || <Loading />}
                     </Text>
                   </Col>
                 </Row>
