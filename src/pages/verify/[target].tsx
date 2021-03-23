@@ -61,7 +61,8 @@ const Verify = () => {
   const [count, setCount] = useState(0);
   const [fee, setFee] = useState(0);
 
-  const FEE = 0.05
+  // todo get from community vote
+  const FEE = 0.05;
 
   useEffect(() => {
     (async () => {

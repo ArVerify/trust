@@ -1,25 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { getFee } from "arverify";
-import { Code, Loading, Note, Popover, Spacer, Text } from "@geist-ui/react";
-import { arToUsd } from "../utils/pricing";
-import SelectMultipleValue from "@geist-ui/react/dist/select/select-multiple-value";
+import React from "react";
+import { Code, Loading, Note, Spacer, Text } from "@geist-ui/react";
 
-const AuthNodeCard = () => {
-  const [nodeFeeAR, setNodeFeeAR] = useState(0);
-  const [nodeFeeUSD, setNodeFeeUSD] = useState(0);
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const nodeVerificationFeeAR = await getFee();
-      setNodeFeeAR(nodeVerificationFeeAR);
-      const nodeVerificationFeeUSD = await arToUsd(nodeVerificationFeeAR);
-      setNodeFeeUSD(nodeVerificationFeeUSD);
-      setLoading(false);
-    })();
-  }, []);
+const AuthNodeCard = (props) => {
+  const loading = props.loading;
+  const nodeFeeAR = props.nodeFeeAR;
+  const nodeFeeUSD = props.nodeFeeUSD;
 
   return (
     <>

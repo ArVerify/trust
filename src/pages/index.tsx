@@ -1,11 +1,10 @@
 import Arweave from "arweave";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import moment from "moment";
-import { all } from "ar-gql";
+import {all} from "ar-gql";
 import verificationsQuery from "../queries/verifications";
 import addressVerifiedQuery from "../queries/addressVerified";
 import {
-  Badge,
   Button,
   Card,
   Code,
@@ -25,20 +24,12 @@ import {
   useTheme,
   useToasts,
 } from "@geist-ui/react";
-import {
-  ClippyIcon,
-  ClockIcon,
-  FileIcon,
-  KeyIcon,
-  ShareIcon,
-} from "@primer/octicons-react";
-import { Twitter } from "react-feather";
-import GoogleIcon from "../components/logos/google";
-import AuthNodeCard from "../components/authNodeCard";
-import { useRouter } from "next/router";
+import {ClippyIcon, ClockIcon, FileIcon, KeyIcon, ShareIcon,} from "@primer/octicons-react";
 
-import { getVerification, verify } from "arverify";
+import {getVerification} from "arverify";
 import styles from "../styles/home.module.sass";
+import GoogleSignInButton from "../components/authnode/GoogleSignInButton";
+import TwitterButton from "../components/twitterButton";
 
 const client = new Arweave({
   host: "arweave.net",
@@ -59,13 +50,8 @@ const Home = () => {
   }, []);
 
   const { setVisible, bindings } = useModal();
-  const {
-    setVisible: setNodeModalVisible,
-    bindings: nodeModalBindings,
-  } = useModal();
 
   const [loading, setLoading] = useState(false);
-  const [loadingNode, setLoadingNode] = useState(false);
   const [failed, setFailed] = useState(false);
   const [status, setStatus] = useState("warning");
   const [percentage, setPercentage] = useState(0);
@@ -132,8 +118,6 @@ const Home = () => {
 
   const [, setToast] = useToasts();
   const { copy } = useClipboard();
-
-  const router = useRouter();
 
   return (
     <Page>
@@ -346,45 +330,13 @@ const Home = () => {
                         )}
                       </div>
                     </Text>
-                    <Button
-                      type="success-light"
-                      onClick={() =>
-                        router.push(
-                          "https://twitter.com/intent/tweet?text=" +
-                            encodeURIComponent(
-                              `Hello everyone!\nPlease verify my Arweave address by using ArVerify here: https://${window.location.host}/verify/${addr}`
-                            )
-                        )
-                      }
-                      className="arverify-button"
-                    >
-                      <Twitter />
-                      Tweet verification link
-                    </Button>
+                    <TwitterButton {...{ addr }} />
                     <Spacer y={1.6} />
                     <Text>
                       You can also purchase third-party verification from
                       Google:
                     </Text>
-                    <Badge.Anchor>
-                      <Badge
-                        type="success"
-                        style={{
-                          border: `1px solid ${theme.palette.successLight}`,
-                        }}
-                      >
-                        BETA
-                      </Badge>
-                      <Button
-                        type="success-light"
-                        onClick={() => setNodeModalVisible(true)}
-                        className="arverify-button"
-                        disabled={true} // TODO
-                      >
-                        <GoogleIcon />
-                        {verified ? "Already verified" : "Verify with Google"}
-                      </Button>
-                    </Badge.Anchor>
+                    <GoogleSignInButton {...{ verified, addr }} />
                   </Col>
                 </Row>
 
@@ -460,39 +412,6 @@ const Home = () => {
           opacity: 0;
         }
       `}</style>
-
-      {/* AuthNodeModal */}
-      <Modal {...nodeModalBindings}>
-        <Modal.Title>Verify with Google</Modal.Title>
-        <Modal.Subtitle style={{ textTransform: "none" }}>
-          Verify using an AuthNode
-        </Modal.Subtitle>
-        <Modal.Content>
-          <AuthNodeCard />
-        </Modal.Content>
-        <Modal.Action passive onClick={() => setNodeModalVisible(false)}>
-          Cancel
-        </Modal.Action>
-        <Modal.Action
-          loading={loadingNode}
-          disabled={verified}
-          onClick={async () => {
-            setLoadingNode(true);
-            const keyfile = JSON.parse(localStorage.getItem("keyfile"));
-            if (keyfile) {
-              const url = await verify(
-                keyfile,
-                "https://trust.arverify.org?verification=successful"
-              );
-              setLoadingNode(false);
-              await router.push(url);
-            }
-            setNodeModalVisible(false);
-          }}
-        >
-          Verify using Google
-        </Modal.Action>
-      </Modal>
     </Page>
   );
 };
