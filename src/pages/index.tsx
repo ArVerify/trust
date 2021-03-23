@@ -1,4 +1,3 @@
-import Arweave from "arweave";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { all } from "ar-gql";
