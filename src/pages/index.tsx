@@ -36,26 +36,29 @@ import { getVerification } from "arverify";
 import styles from "../styles/home.module.sass";
 import GoogleSignInButton from "../components/authnode/GoogleSignInButton";
 import TwitterButton from "../components/twitterButton";
+import useArConnect from "use-arconnect";
 
-const client = new Arweave({
-  host: "arweave.net",
-  port: 443,
-  protocol: "https",
-});
+const arConnectPermissions = [
+  "ACCESS_ADDRESS",
+  "ACCESS_ALL_ADDRESSES",
+  "SIGN_TRANSACTION",
+];
 
 const Home = () => {
   const theme = useTheme();
   const [addr, setAddr] = useState("");
-  useEffect(() => {
-    (async () => {
-      const keyfile = localStorage.getItem("keyfile");
-      if (keyfile) {
-        setAddr(await client.wallets.jwkToAddress(JSON.parse(keyfile)));
-      }
-    })();
-  }, []);
+  const arConnect = useArConnect();
 
-  const { setVisible, bindings } = useModal();
+  useEffect(() => {
+    if (!arConnect) return;
+    (async () => {
+      try {
+        if ((await arConnect.getPermissions()).includes("ACCESS_ADDRESS")) {
+          setAddr(await arConnect.getActiveAddress());
+        }
+      } catch {}
+    })();
+  }, [arConnect]);
 
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -125,6 +128,26 @@ const Home = () => {
   const [, setToast] = useToasts();
   const { copy } = useClipboard();
 
+  const connectWallet = async () => {
+    if (!arConnect) return window.open("https://arconnect.io");
+    // logout
+    if (addr !== "") {
+      await arConnect.disconnect();
+      setAddr("");
+    } else {
+      // login
+      try {
+        await arConnect.connect(arConnectPermissions);
+        setAddr(await arConnect.getActiveAddress());
+        window.addEventListener("walletSwitch", (e: any) =>
+          setAddr(e.detail.address)
+        );
+      } catch {
+        setToast({ text: "Could not connect to ArConnect", type: "error" });
+      }
+    }
+  };
+
   return (
     <Page>
       <Row justify="space-between" align="middle">
@@ -139,18 +162,9 @@ const Home = () => {
           }
           placement="bottom"
         >
-          <Text
-            onClick={() => {
-              if (addr === "") {
-                setVisible(true);
-              } else {
-                localStorage.removeItem("keyfile");
-                setAddr("");
-              }
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            {addr === "" ? "Log In" : "Logout"}
+          <Text onClick={connectWallet} style={{ cursor: "pointer" }}>
+            {(arConnect && (addr === "" ? "Log In" : "Logout")) ||
+              "Install ArConnect"}
           </Text>
         </Tooltip>
       </Row>
@@ -185,11 +199,11 @@ const Home = () => {
             <Spacer y={4} />
             <Button
               type="success-light"
-              onClick={() => setVisible(true)}
+              onClick={connectWallet}
               className="arverify-button"
             >
               <KeyIcon />
-              Sign in with your key file
+              {(arConnect && "Connect to your wallet") || "Install ArConnect"}
             </Button>
           </div>
         ) : (
@@ -355,11 +369,11 @@ const Home = () => {
                         ((addressHasVerified.length === 0 && (
                           <Text>You have not verified anyone.</Text>
                         )) ||
-                          addressHasVerified.map((address) => (
-                            <>
+                          addressHasVerified.map((address, i) => (
+                            <div key={i}>
                               <Code>{address}</Code>
                               <Spacer y={0} />
-                            </>
+                            </div>
                           )))) || <Loading />}
                     </Text>
                   </Col>
@@ -369,55 +383,6 @@ const Home = () => {
           </>
         )}
       </>
-      <Modal {...bindings}>
-        <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{ textTransform: "none" }}>
-          Use your{" "}
-          <a
-            href="https://www.arweave.org/wallet"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Arweave keyfile
-          </a>{" "}
-          to continue
-        </Modal.Subtitle>
-        <Modal.Content>
-          <Card
-            style={{ border: "1px dashed #333", cursor: "pointer" }}
-            onClick={() => document.getElementById("file").click()}
-          >
-            <FileIcon size={24} /> Sign in with your keyfile
-          </Card>
-          <Spacer y={1} />
-          <Note>Your keyfile will stay locally.</Note>
-        </Modal.Content>
-        <Modal.Action passive onClick={() => setVisible(false)}>
-          Cancel
-        </Modal.Action>
-      </Modal>
-      <input
-        type="file"
-        id="file"
-        accept=".json,application/json"
-        onChange={(ev) => {
-          const reader = new FileReader();
-          reader.onload = async () => {
-            const jwk = JSON.parse(reader.result.toString());
-            const addr = await client.wallets.jwkToAddress(jwk);
-
-            localStorage.setItem("keyfile", JSON.stringify(jwk));
-            setAddr(addr);
-            setVisible(false);
-          };
-          reader.readAsText(ev.target.files[0]);
-        }}
-      />
-      <style jsx>{`
-        #file {
-          opacity: 0;
-        }
-      `}</style>
     </Page>
   );
 };
