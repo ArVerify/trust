@@ -61,6 +61,8 @@ const Verify = () => {
   const [count, setCount] = useState(0);
   const [fee, setFee] = useState(0);
 
+  const FEE = 0.05
+
   useEffect(() => {
     (async () => {
       const gql = await all(verificationsQuery, { addr: target });
@@ -70,7 +72,7 @@ const Verify = () => {
         "https://api.coingecko.com/api/v3/simple/price?ids=arweave&vs_currencies=usd"
       );
       const res = await raw.clone().json();
-      setFee(Math.max(0.1, parseFloat((0.5 / res.arweave.usd).toFixed(4))));
+      setFee(Math.max(FEE, parseFloat((0.5 / res.arweave.usd).toFixed(4))));
     })();
   });
 

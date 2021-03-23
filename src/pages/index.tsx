@@ -306,7 +306,7 @@ const Home = () => {
                   <Col>
                     <Text h3>Boost your score</Text>
                     <Text>
-                      To increase your score, simply ask a firend to verify you
+                      To increase your score, simply ask a friend to verify you
                       by sending them this link:
                       <a
                         href={`https://${window.location.host}/verify/${addr}`}
