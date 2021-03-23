@@ -1,7 +1,7 @@
 import Arweave from "arweave";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
-import {all} from "ar-gql";
+import { all } from "ar-gql";
 import verificationsQuery from "../queries/verifications";
 import addressVerifiedQuery from "../queries/addressVerified";
 import {
@@ -24,9 +24,15 @@ import {
   useTheme,
   useToasts,
 } from "@geist-ui/react";
-import {ClippyIcon, ClockIcon, FileIcon, KeyIcon, ShareIcon,} from "@primer/octicons-react";
+import {
+  ClippyIcon,
+  ClockIcon,
+  FileIcon,
+  KeyIcon,
+  ShareIcon,
+} from "@primer/octicons-react";
 
-import {getVerification} from "arverify";
+import { getVerification } from "arverify";
 import styles from "../styles/home.module.sass";
 import GoogleSignInButton from "../components/authnode/GoogleSignInButton";
 import TwitterButton from "../components/twitterButton";
