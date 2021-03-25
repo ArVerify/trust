@@ -80,6 +80,7 @@ const AuthNodeModal = forwardRef((props, ref) => {
           onClick={async () => {
             setLoading(true);
             const url = await verify(
+              // @ts-ignore
               "use_wallet",
               "https://trust.arverify.org?verification=successful"
             );
