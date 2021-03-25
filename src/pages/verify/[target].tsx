@@ -15,6 +15,7 @@ import {
   Spacer,
   Link,
   Note,
+  useToasts,
 } from "@geist-ui/react";
 import { all, run } from "ar-gql";
 import verificationsQuery from "../../queries/verifications";
@@ -23,6 +24,7 @@ import { FileIcon, InfoIcon } from "@primer/octicons-react";
 import { selectTokenHolder } from "../../utils/community";
 import { COMMUNITY as COMMUNITY_ID } from "arverify";
 import NextLink from "next/link";
+import useArConnect from "use-arconnect";
 import homeStyles from "../../styles/home.module.sass";
 
 const client = new Arweave({
@@ -31,9 +33,16 @@ const client = new Arweave({
   protocol: "https",
 });
 
+const arConnectPermissions = [
+  "ACCESS_ADDRESS",
+  "ACCESS_ALL_ADDRESSES",
+  "SIGN_TRANSACTION",
+];
+
 const Verify = () => {
   const router = useRouter();
   const [target, setTarget] = useState("");
+  const [, setToast] = useToasts();
 
   useEffect(() => {
     if (router.query.target) {
@@ -42,17 +51,19 @@ const Verify = () => {
   }, [router.query.target]);
 
   const [addr, setAddr] = useState("");
+  const arConnect = useArConnect();
 
   useEffect(() => {
+    if (!arConnect) return;
     (async () => {
-      const keyfile = localStorage.getItem("keyfile");
-      if (keyfile) {
-        setAddr(await client.wallets.jwkToAddress(JSON.parse(keyfile)));
-      }
+      try {
+        if ((await arConnect.getPermissions()).includes("ACCESS_ADDRESS")) {
+          setAddr(await arConnect.getActiveAddress());
+        }
+      } catch {}
     })();
-  }, []);
+  }, [arConnect]);
 
-  const { setVisible, bindings } = useModal();
   const {
     setVisible: setConfirmationVisible,
     bindings: confirmationBindings,
@@ -101,6 +112,26 @@ const Verify = () => {
 
   const [tweetDisabled, setTweetDisabled] = useState(false);
 
+  const connectWallet = async () => {
+    if (!arConnect) return window.open("https://arconnect.io");
+    // logout
+    if (addr !== "") {
+      await arConnect.disconnect();
+      setAddr("");
+    } else {
+      // login
+      try {
+        await arConnect.connect(arConnectPermissions);
+        setAddr(await arConnect.getActiveAddress());
+        window.addEventListener("walletSwitch", (e: any) =>
+          setAddr(e.detail.address)
+        );
+      } catch {
+        setToast({ text: "Could not connect to ArConnect", type: "error" });
+      }
+    }
+  };
+
   return (
     <Page>
       <Row justify="space-between" align="middle">
@@ -117,18 +148,9 @@ const Verify = () => {
           }
           placement="bottom"
         >
-          <Text
-            onClick={() => {
-              if (addr === "") {
-                setVisible(true);
-              } else {
-                localStorage.removeItem("keyfile");
-                setAddr("");
-              }
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            {addr === "" ? "Log In" : "Logout"}
+          <Text onClick={connectWallet} style={{ cursor: "pointer" }}>
+            {(arConnect && (addr === "" ? "Log In" : "Logout")) ||
+              "Install ArConnect"}
           </Text>
         </Tooltip>
       </Row>
@@ -158,10 +180,10 @@ const Verify = () => {
         {addr === "" ? (
           <Button
             type="success-light"
-            onClick={() => setVisible(true)}
+            onClick={connectWallet}
             className="arverify-button"
           >
-            Sign in with your key file
+            {(arConnect && "Connect to your wallet") || "Install ArConnect"}
           </Button>
         ) : (
           <>
@@ -227,33 +249,6 @@ const Verify = () => {
           </Tooltip>
         </Text>
       </div>
-      <Modal {...bindings}>
-        <Modal.Title>Sign In</Modal.Title>
-        <Modal.Subtitle style={{ textTransform: "none" }}>
-          Use your{" "}
-          <a
-            href="https://www.arweave.org/wallet"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Arweave keyfile
-          </a>{" "}
-          to continue
-        </Modal.Subtitle>
-        <Modal.Content>
-          <Card
-            style={{ border: "1px dashed #333", cursor: "pointer" }}
-            onClick={() => document.getElementById("file").click()}
-          >
-            <FileIcon size={24} /> Sign in with your keyfile
-          </Card>
-          <Spacer y={1} />
-          <Note>Your keyfile will stay locally.</Note>
-        </Modal.Content>
-        <Modal.Action passive onClick={() => setVisible(false)}>
-          Cancel
-        </Modal.Action>
-      </Modal>
 
       <Modal {...confirmationBindings}>
         <Modal.Title>Confirm your verification</Modal.Title>
@@ -279,28 +274,20 @@ const Verify = () => {
           onClick={async () => {
             setLoading(true);
 
-            const jwk = JSON.parse(localStorage.getItem("keyfile"));
-
-            const tip = await client.createTransaction(
-              {
-                target: await selectTokenHolder(),
-                quantity: client.ar.arToWinston(fee.toString()),
-              },
-              jwk
-            );
+            const tip = await client.createTransaction({
+              target: await selectTokenHolder(),
+              quantity: client.ar.arToWinston(fee.toString()),
+            });
             tip.addTag("Application", "ArVerify");
             tip.addTag("Action", "FEE_Verification");
             tip.addTag("Address", target);
-            await client.transactions.sign(tip, jwk);
+            await client.transactions.sign(tip);
             await client.transactions.post(tip);
 
-            const tx = await client.createTransaction(
-              {
-                target,
-                data: Math.random().toString().slice(-4),
-              },
-              jwk
-            );
+            const tx = await client.createTransaction({
+              target,
+              data: Math.random().toString().slice(-4),
+            });
             tx.addTag("Application", "ArVerify");
             tx.addTag("Action", "Verification");
             tx.addTag("Method", "Link");
@@ -315,43 +302,18 @@ const Verify = () => {
             );
             tx.addTag("Type", "ArweaveActivity");
 
-            await client.transactions.sign(tx, jwk);
+            await client.transactions.sign(tx);
             await client.transactions.post(tx);
 
             setLoading(false);
             setVerified(true);
 
             router.reload();
-
-            setVisible(false);
           }}
         >
           Confirm
         </Modal.Action>
       </Modal>
-
-      <input
-        type="file"
-        id="file"
-        accept=".json,application/json"
-        onChange={(ev) => {
-          const reader = new FileReader();
-          reader.onload = async () => {
-            const jwk = JSON.parse(reader.result.toString());
-            const addr = await client.wallets.jwkToAddress(jwk);
-
-            localStorage.setItem("keyfile", JSON.stringify(jwk));
-            setAddr(addr);
-            setVisible(false);
-          };
-          reader.readAsText(ev.target.files[0]);
-        }}
-      />
-      <style jsx>{`
-        #file {
-          opacity: 0;
-        }
-      `}</style>
     </Page>
   );
 };

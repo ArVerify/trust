@@ -79,15 +79,12 @@ const AuthNodeModal = forwardRef((props, ref) => {
           disabled={notEnoughBalance}
           onClick={async () => {
             setLoading(true);
-            const keyfile = JSON.parse(localStorage.getItem("keyfile"));
-            if (keyfile) {
-              const url = await verify(
-                keyfile,
-                "https://trust.arverify.org?verification=successful"
-              );
-              setLoading(false);
-              await router.push(url);
-            }
+            const url = await verify(
+              "use_wallet",
+              "https://trust.arverify.org?verification=successful"
+            );
+            setLoading(false);
+            await router.push(url);
             setVisible(false);
           }}
         >
