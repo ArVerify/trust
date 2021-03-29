@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "next dev",
-    "start": "next start -p $PORT",
+    "start": "next start -p 8080",
     "heroku-postbuild": "npm run build",
     "build": "next build",
     "fmt": "prettier --write ."
@@ -10,7 +10,7 @@
     "@geist-ui/react": "^2.1.0-canary.2",
     "@primer/octicons-react": "^11.2.0",
     "ar-gql": "^0.0.3",
-    "arverify": "^0.0.9",
+    "arverify": "^0.0.11",
     "arweave": "^1.10.13",
     "cacheweave": "^2.5.0",
     "moment": "^2.29.1",
@@ -20,7 +20,7 @@
     "react-feather": "^2.0.9",
     "sass": "^1.32.8",
     "smartweave": "^0.4.27",
-    "use-arconnect": "^1.0.0"
+    "use-arconnect": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^14.14.22",
