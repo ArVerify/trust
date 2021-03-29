@@ -25,7 +25,9 @@ const GoogleSignInButton = (props) => {
           // @ts-ignore
           onClick={() => authNodeModal.current.open()}
           className="arverify-button"
-          disabled={verified}
+          // todo fix library
+          //disabled={verified}
+          disabled={true}
         >
           <GoogleIcon />
           {verified ? "Already verified" : "Verify with Google"}

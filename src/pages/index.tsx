@@ -88,7 +88,9 @@ const Home = () => {
 
       const verification = await getVerification(addr);
       console.log(verification);
-      setVerified(!!verification.txID);
+      // Todo fix libarary
+      //setVerified(!!verification.txID);
+      setVerified(false);
 
       const now = moment();
       const then = moment.utc(res.updated_at);
